@@ -210,6 +210,8 @@ renderer.xr.enabled = true;
 renderer.xr.setReferenceSpaceType("local");
 renderer.xr.setSession("local-floor");
 
+renderer.setAnimationLoop(animate);
+
 document.body.appendChild( VRButton.createButton( renderer ) );
 
 
