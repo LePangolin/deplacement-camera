@@ -207,6 +207,7 @@ renderer.setSize(window.innerWidth, window.innerHeight);
 renderer.setPixelRatio(window.devicePixelRatio);
 
 renderer.xr.enabled = true;
+renderer.vr.enabled = true;
 document.body.appendChild( VRButton.createButton( renderer ) );
 
 
