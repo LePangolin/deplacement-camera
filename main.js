@@ -59,8 +59,8 @@ camera.position.setY(12);
 camera.position.setZ(-4);
 camera.rotateY(3.15);
 
-const cameraVR = new THREE.StereoCamera();
-const controlsVR = new THREE.VRControls(cameraVR);
+// const cameraVR = new THREE.StereoCamera();
+// const controlsVR = new THREE.VRControls(cameraVR);
 
 const pointLight = new THREE.PointLight(0xffffff);
 pointLight.position.set(5, 5, 5);
@@ -206,7 +206,7 @@ const renderer = new THREE.WebGLRenderer({
 renderer.setSize(window.innerWidth, window.innerHeight);
 renderer.setPixelRatio(window.devicePixelRatio);
 
-renderer.vr.enabled = true;
+renderer.xr.enabled = true;
 document.body.appendChild( VRButton.createButton( renderer ) );
 
 
