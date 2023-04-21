@@ -208,16 +208,8 @@ renderer.setPixelRatio(window.devicePixelRatio);
 
 renderer.xr.enabled = true;
 renderer.xr.setReferenceSpaceType("local");
-renderer.xr.setSession("local-floor");
 
 renderer.setAnimationLoop(() => {
-  renderer.xr.updateCamera(new THREE.PerspectiveCamera(
-    75,
-    window.innerWidth / window.innerHeight,
-    0.1,
-    1000
-  ).position.set(0, 12, 0));
-
 	renderer.render( scene, camera );
 });
 
