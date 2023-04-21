@@ -211,7 +211,8 @@ renderer.xr.setReferenceSpaceType("local");
 renderer.xr.setSession("local-floor");
 
 renderer.setAnimationLoop(() => {
-
+  // modifie la hauteur de la camera VR
+  camera.position.y = controls.getObject().position.y + 1.6;
 	renderer.render( scene, camera );
 });
 
