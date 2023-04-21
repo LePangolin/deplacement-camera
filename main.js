@@ -206,8 +206,7 @@ const renderer = new THREE.WebGLRenderer({
 renderer.setSize(window.innerWidth, window.innerHeight);
 renderer.setPixelRatio(window.devicePixelRatio);
 
-renderer.vr.setDevice( controls.getVRDevice() );
-
+renderer.vr.enabled = true;
 document.body.appendChild( VRButton.createButton( renderer ) );
 
 
