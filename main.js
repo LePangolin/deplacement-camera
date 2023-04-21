@@ -211,7 +211,7 @@ renderer.xr.setReferenceSpaceType("local");
 renderer.xr.setSession("local-floor");
 
 renderer.setAnimationLoop(() => {
-  camera.lookAt(controls.getObject().position);
+  camera.position.y = 10;
 	renderer.render( scene, camera );
 });
 
