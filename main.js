@@ -211,7 +211,7 @@ renderer.xr.setReferenceSpaceType("local");
 renderer.xr.setSession("local-floor");
 
 renderer.setAnimationLoop(() => {
-  camera.position.y = 10;
+
 	renderer.render( scene, camera );
 });
 
@@ -368,7 +368,7 @@ function animate() {
   renderer.render(scene, camera);
 }
 
-init();
+animate();
 
 document.addEventListener("keydown", function (event) {
   if (event.code === "ArrowUp" || event.code === "KeyW") {
