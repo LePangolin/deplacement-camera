@@ -210,7 +210,119 @@ renderer.xr.enabled = true;
 renderer.xr.setReferenceSpaceType("local");
 
 renderer.setAnimationLoop(() => {
-	renderer.render( scene, camera );
+	requestAnimationFrame(animate);
+  const time = performance.now();
+  scene.remove(carHitboxHelper);
+  carHitbox = new THREE.Box3().setFromObject(groups);
+  carHitbox = carHitbox.expandByScalar(2);
+
+  
+  carHitboxHelper = new THREE.Box3Helper(carHitbox, 0xffff00);
+  if (carHitboxHelper) {
+    scene.add(carHitboxHelper);
+  }
+  let directionCollision = "none";
+  if (controls.isLocked === true) {
+    raycaster.ray.origin.copy(controls.getObject().position);
+    raycaster.ray.origin.y -= 10;
+
+    const intersections = raycaster.intersectObjects(objects);
+    let onObject = intersections.length > 0;
+    if (carHitbox) {
+      threeHitbox.forEach((hitbox) => {
+        if (carHitbox.intersectsBox(hitbox[0])) {
+          onObject = true;
+          directionCollision = "front";
+        } else if (carHitbox.intersectsBox(hitbox[1])) {
+          onObject = true;
+          directionCollision = "left";
+        } else if (carHitbox.intersectsBox(hitbox[2])) {
+          onObject = true;
+          directionCollision = "right";
+        } else if (carHitbox.intersectsBox(hitbox[3])) {
+          onObject = true;
+          directionCollision = "back";
+        }
+      });
+    }
+
+    const delta = (time - prevTime) / 1000;
+
+    velocity.x -= velocity.x * 10.0 * delta;
+    velocity.z -= velocity.z * 10.0 * delta;
+
+    velocity.y -= 9.8 * 100.0 * delta; // 100.0 = mass
+
+    direction.z = Number(moveForward) - Number(moveBackward);
+    direction.x = Number(moveRight) - Number(moveLeft);
+    direction.normalize(); // this ensures consistent movements in all directions
+
+    if (moveForward || moveBackward) velocity.z -= direction.z * 400.0 * delta;
+    if (moveLeft || moveRight) velocity.x -= direction.x * 400.0 * delta;
+
+    if (onObject === true) {
+      velocity.y = Math.max(0, velocity.y);
+      if (directionCollision === "front") {
+        camera.position.z -= 0.1;
+        groups.position.z -= 0.1;
+      }
+      if (directionCollision === "back") {
+        camera.position.z += 0.1;
+        groups.position.z += 0.1;
+      }
+      if (directionCollision === "right") {
+        camera.position.x -= 0.1;
+        groups.position.x -= 0.1;
+      }
+      if (directionCollision === "left") {
+        camera.position.x += 0.1;
+        groups.position.x += 0.1;
+      }
+    } else {
+      controls.moveRight(-velocity.x * delta);
+      controls.moveForward(-velocity.z * delta);
+
+      controls.getObject().position.y += velocity.y * delta; // new behavior
+
+      if (controls.getObject().position.y < 10) {
+        velocity.y = 0;
+        controls.getObject().position.y = 10;
+      }
+      groups.position.z = camera.position.z + 5;
+      groups.position.x = camera.position.x + 1;
+
+      if (moveRight) {
+        if (Math.sin(groups.rotation.y) != -0.999) {
+          if (Math.sin(groups.rotation.y) > -0.999) groups.rotation.y -= 0.01;
+          if (Math.sin(groups.rotation.y) < -0.999) groups.rotation.y += 0.01;
+        }
+      }
+      if (moveLeft) {
+        if (Math.sin(groups.rotation.y) < 0.999) groups.rotation.y += 0.01;
+      }
+      if (moveForward && !moveLeft && !moveRight) {
+        console.log("here");
+        if (Math.sin(groups.rotation.y) > 0) {
+          if (Math.sin(groups.rotation.y) != 0) groups.rotation.y -= 0.01;
+        }
+        if (Math.sin(groups.rotation.y) < 0) {
+          if (Math.sin(groups.rotation.y) != 0) groups.rotation.y += 0.01;
+        }
+      }
+      if (moveBackward && !moveLeft && !moveRight) {
+        if (Math.sin(groups.rotation.y) > 0) {
+          if (Math.sin(groups.rotation.y) != 0) groups.rotation.y += 0.01;
+        }
+        if (Math.sin(groups.rotation.y) < 0) {
+          if (Math.sin(groups.rotation.y) != 0) groups.rotation.y -= 0.01;
+        }
+      }
+    }
+  }
+
+  prevTime = time;
+
+  renderer.render(scene, camera);
 });
 
 document.body.appendChild( VRButton.createButton( renderer ) );
