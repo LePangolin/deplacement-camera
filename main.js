@@ -221,7 +221,7 @@ function animatevr(){
     let controllerGrip1 = renderer.xr.getControllerGrip(0);
     let controllerGrip2 = renderer.xr.getControllerGrip(1);
     controller1.addEventListener(" connected", (event) => {
-      console.log(event);
+      document.body.appendChild(event);
     });
     scene.add(controller1);
     scene.add(controller2);
