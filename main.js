@@ -212,6 +212,7 @@ renderer.xr.enabled = true;
 renderer.xr.setReferenceSpaceType("local");
 
 function animatevr(){
+  let moving = false;
   renderer.setAnimationLoop(() => {
     groups.position.y = -10;
     camera.position.y = 47;
@@ -219,18 +220,30 @@ function animatevr(){
     let controller2 = renderer.xr.getController(1);
     let controllerGrip1 = renderer.xr.getControllerGrip(0);
     let controllerGrip2 = renderer.xr.getControllerGrip(1);
-    controller1.addEventListener("selectstart", () => {
-      console.log("selectstart");
-    });
-    controller1.addEventListener("selectend", () => {
-      console.log("selectend");
-    });
-    controller2.addEventListener("selectstart", () => {
-      console.log("selectstart");
-    });
-    controller2.addEventListener("selectend", () => {
-      console.log("selectend");
-    });
+    // if i move the joystick
+    if (controller1.axes[1] > 0.5) {
+      // if i am not already moving
+      if (!moving) {
+        // if i am not already at the top
+        if (groups.position.y < 0) {
+          // move up
+          groups.position.y += 0.1;
+          moving = true;
+        }
+      }
+    }
+    // if i move the joystick
+    if (controller1.axes[1] < -0.5) {
+      // if i am not already moving
+      if (!moving) {
+        // if i am not already at the bottom
+        if (groups.position.y > -10) {
+          // move down
+          groups.position.y -= 0.1;
+          moving = true;
+        }
+      }
+    }
     scene.add(controller1);
     scene.add(controller2);
     scene.add(controllerGrip1);
