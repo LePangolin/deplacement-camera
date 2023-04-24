@@ -233,10 +233,10 @@ const gripController2 = renderer.xr.getControllerGrip(1);
 const model2 = new XRControllerModelFactory();
 const controllerModel2 = model2.createControllerModel(gripController2);
 gripController2.add(controllerModel2);
-gripController1.addEventListener("selectstart", (event) => {
+gripController2.addEventListener("selectstart", (event) => {
   scene.add(cube);
 });
-gripController1.addEventListener("selectend", (event) => {
+gripController2.addEventListener("selectend", (event) => {
   scene.remove(cube);
 });
 scene.add(gripController2);
