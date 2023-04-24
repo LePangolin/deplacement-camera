@@ -227,7 +227,7 @@ try{
   let joystick1 = controller1.userData.gamepad.axes;
   p.innerHTML = "Joystick found"
 }catch{
-  p.innerHTML = "Joystick not found"
+  p.innerHTML = "&nbsp;&nbsp;Joystick not found"
 }
 p.style.zIndex = "99999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999";
 document.body.appendChild(p);
