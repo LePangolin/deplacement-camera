@@ -229,6 +229,7 @@ try{
   p.innerHTML = "Joystick not found"
 }
 
+p.style.color = "white";
 document.body.appendChild(p);
 
 
