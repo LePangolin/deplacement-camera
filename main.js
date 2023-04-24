@@ -221,9 +221,9 @@ scene.add(controllerGrip1);
 scene.add(controllerGrip2);
 try{
   let joystick1 = controller1.userData.gamepad.axes;
-  document.body.appendChild(" controller found");
+  document.body.appendChild(Document.createTextNode("controller1"));
 }catch{
-  document.body.appendChild( 'no controller');
+  document.body.appendChild(Document.createTextNode("no controller1"));
 }
 
 
