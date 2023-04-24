@@ -217,8 +217,6 @@ function animatevr(){
     let controller2 = renderer.xr.getController(1);
     scene.add(controller1);
     scene.add(controller2);
-    handleController(controller1);
-    handleController(controller2);
     renderer.render(scene, camera);
   });
 }
