@@ -52,7 +52,7 @@ const direction = new THREE.Vector3();
 const blinkerSphereGeometry = new THREE.SphereGeometry(0.3, 16, 16);
 blinkerSphereGeometry.translate(0,0.3,0);
 const blinkerSphereMaterial = new THREE.MeshBasicMaterial({
-    side: BackSide,
+    side: 1,
     color: 0x000000,
     transparent: true
 });
