@@ -147,7 +147,7 @@ for (let i = 0; i < 10; i++) {
 
       let randX = Math.random() * 400 - 100;
       let randZ = Math.random() * 400 - 100;
-      fbx.position.set(randX, 0, randZ);
+      fbx.position.set(randX, -10, randZ);
       let hitbox = new THREE.Box3().setFromObject(fbx);
       hitbox.min.x += 15;
       hitbox.min.z += 15;
@@ -213,7 +213,7 @@ renderer.xr.setReferenceSpaceType("local");
 
 function animatevr(){
   renderer.setAnimationLoop(() => {
-    groups.position.y = -1;
+    groups.position.y = -10;
     camera.position.y = 47;
     let controller1 = renderer.xr.getController(0);
     let controller2 = renderer.xr.getController(1);
