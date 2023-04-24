@@ -216,9 +216,16 @@ let gripController1 = renderer.xr.getControllerGrip(0);
 const model1 = new XRControllerModelFactory();
 const controllerModel1 = model1.createControllerModel(gripController1);
 gripController1.add(controllerModel1);
-
-gripController1.addEventListener("selectstart", onSelectStart);
-gripController1.addEventListener("selectend", onSelectEnd);
+let geometry = new THREE.BoxGeometry(1, 1, 1);
+let material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+let cube = new THREE.Mesh(geometry, material);
+cube.position.set(0, 0, -5);
+gripController1.addEventListener("selectstart", (event) => {
+  scene.add(cube);
+});
+gripController1.addEventListener("selectend", (event) => {
+  scene.remove(cube);
+});
 
 scene.add(gripController1);
 
@@ -226,14 +233,14 @@ const gripController2 = renderer.xr.getControllerGrip(1);
 const model2 = new XRControllerModelFactory();
 const controllerModel2 = model2.createControllerModel(gripController2);
 gripController2.add(controllerModel2);
-gripController1.addEventListener("selectstart", onSelectStart);
-gripController1.addEventListener("selectend", onSelectEnd);
+gripController1.addEventListener("selectstart", (event) => {
+  scene.add(cube);
+});
+gripController1.addEventListener("selectend", (event) => {
+  scene.remove(cube);
+});
 scene.add(gripController2);
 
-let geometry = new THREE.BoxGeometry(1, 1, 1);
-let material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
-let cube = new THREE.Mesh(geometry, material);
-cube.position.set(0, 0, -5);
 
 
 let p = document.createElement("p");
