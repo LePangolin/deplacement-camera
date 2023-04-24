@@ -212,6 +212,9 @@ renderer.xr.setReferenceSpaceType("local");
 
 renderer.setAnimationLoop(() => {
 	requestAnimationFrame(animate);
+  camera.lookAt(
+    new THREE.Vector3(groups.position.x, groups.position.y + 10, groups.position.z)
+  );  
   const time = performance.now();
   scene.remove(carHitboxHelper);
   carHitbox = new THREE.Box3().setFromObject(groups);
@@ -360,9 +363,6 @@ raycaster = new THREE.Raycaster(
   10
 );
 
-camera.lookAt(
-  new THREE.Vector3(groups.position.x, groups.position.y + 10, groups.position.z)
-);
 
 function animate() {
   requestAnimationFrame(animate);
