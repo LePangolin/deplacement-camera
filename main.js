@@ -216,13 +216,28 @@ let gripController1 = renderer.xr.getControllerGrip(0);
 const model1 = new XRControllerModelFactory();
 const controllerModel1 = model1.createControllerModel(gripController1);
 gripController1.add(controllerModel1);
+
+gripController1.addEventListener("selectstart", onSelectStart);
+gripController1.addEventListener("selectend", onSelectEnd);
+
 scene.add(gripController1);
 
 const gripController2 = renderer.xr.getControllerGrip(1);
 const model2 = new XRControllerModelFactory();
 const controllerModel2 = model2.createControllerModel(gripController2);
 gripController2.add(controllerModel2);
+gripController1.addEventListener("selectstart", onSelectStart);
+gripController1.addEventListener("selectend", onSelectEnd);
 scene.add(gripController2);
+
+
+function onSelectStart(event) {
+  console.log(event)
+}
+
+function onSelectEnd(event) {
+  console.log(event)
+}
 
 
 
