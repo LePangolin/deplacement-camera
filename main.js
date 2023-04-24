@@ -285,12 +285,12 @@ function onSelectEnd(e) {
       // first work out vector from feet to cursor
 
       // feet position
-      const feetPos = renderer.xr.getCamera(camera).getWorldPosition(tempVec);
+      const feetPos = renderer.xr.getCamera(camera).getWorldPosition(new THREE.Vector3());
       feetPos.y = 0;
 
       // cursor position
-      const p = guidingController.getWorldPosition(tempVecP);
-      const v = guidingController.getWorldDirection(tempVecV);
+      const p = guidingController.getWorldPosition(new THREE.Vector3());
+      const v = guidingController.getWorldDirection(new THREE.Vector3());
       v.multiplyScalar(6);
       const t = (-v.y  + Math.sqrt(v.y**2 - 2*p.y*g.y))/g.y;
       const cursorPos = positionAtT(tempVec1,t,p,v,g);
