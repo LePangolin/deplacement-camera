@@ -221,8 +221,12 @@ function animatevr(){
     let controllerGrip1 = renderer.xr.getControllerGrip(0);
     let controllerGrip2 = renderer.xr.getControllerGrip(1);
     // get the joystick position
-    // let joystick1 = controller1.userData.gamepad.axes;
-    console.log(controller1)
+    try{
+      let joystick1 = controller1.userData.gamepad.axes;
+    }catch{
+      console.log("no joystick");
+    }
+    
 
     scene.add(controller1);
     scene.add(controller2);
