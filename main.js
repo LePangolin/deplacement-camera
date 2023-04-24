@@ -201,6 +201,7 @@ loadingManager.onLoad = () => {
 const renderer = new THREE.WebGLRenderer({
   canvas: document.querySelector("#bg"),
   antialias: false,
+  alpha: true
 });
 
 
