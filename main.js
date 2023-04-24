@@ -221,12 +221,15 @@ scene.add(controller1);
 scene.add(controller2);
 scene.add(controllerGrip1);
 scene.add(controllerGrip2);
+let p = document.createElement("p");
 try{
   let joystick1 = controller1.userData.gamepad.axes;
-  document.body.appendChild(Document.createTextNode("controller1"));
+  p.innerHTML = "Joystick found"
 }catch{
-  document.body.appendChild(Document.createTextNode("no controller1"));
+  p.innerHTML = "Joystick not found"
 }
+
+document.body.appendChild(p);
 
 
 function animatevr(){
