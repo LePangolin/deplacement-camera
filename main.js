@@ -213,8 +213,8 @@ renderer.xr.setReferenceSpaceType("local");
 
 function animatevr(){
   renderer.setAnimationLoop(() => {
-    controller1 = renderer.xr.getController(0);
-    controller2 = renderer.xr.getController(1);
+    let controller1 = renderer.xr.getController(0);
+    let controller2 = renderer.xr.getController(1);
     scene.add(controller1);
     scene.add(controller2);
     handleController(controller1);
