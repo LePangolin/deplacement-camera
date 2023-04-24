@@ -210,10 +210,12 @@ renderer.setPixelRatio(window.devicePixelRatio);
 
 renderer.xr.enabled = true;
 renderer.xr.setReferenceSpaceType("local");
+document.body.appendChild( VRButton.createButton( renderer ) );
 let controller1 = renderer.xr.getController(0);
 let controller2 = renderer.xr.getController(1);
 let controllerGrip1 = renderer.xr.getControllerGrip(0);
 let controllerGrip2 = renderer.xr.getControllerGrip(1);
+// add enter vr button
 
 scene.add(controller1);
 scene.add(controller2);
@@ -238,7 +240,6 @@ function animatevr(){
 
 
 
-document.body.appendChild( VRButton.createButton( renderer ) );
 
 
 
