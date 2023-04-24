@@ -211,13 +211,19 @@ renderer.setPixelRatio(window.devicePixelRatio);
 renderer.xr.enabled = true;
 renderer.xr.setReferenceSpaceType("local");
 document.body.appendChild( VRButton.createButton( renderer ) );
-let controller1 = renderer.xr.getController(0);
 let gripController1 = renderer.xr.getControllerGrip(0);
 
 const model1 = new XRControllerModelFactory();
 const controllerModel1 = model1.createControllerModel(gripController1);
 gripController1.add(controllerModel1);
 scene.add(gripController1);
+
+const gripController2 = renderer.xr.getControllerGrip(1);
+const model2 = new XRControllerModelFactory();
+const controllerModel2 = model2.createControllerModel(gripController2);
+gripController2.add(controllerModel2);
+scene.add(gripController2);
+
 
 
 function animatevr(){
