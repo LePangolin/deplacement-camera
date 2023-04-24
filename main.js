@@ -210,28 +210,28 @@ renderer.setPixelRatio(window.devicePixelRatio);
 
 renderer.xr.enabled = true;
 renderer.xr.setReferenceSpaceType("local");
+let controller1 = renderer.xr.getController(0);
+let controller2 = renderer.xr.getController(1);
+let controllerGrip1 = renderer.xr.getControllerGrip(0);
+let controllerGrip2 = renderer.xr.getControllerGrip(1);
+
+scene.add(controller1);
+scene.add(controller2);
+scene.add(controllerGrip1);
+scene.add(controllerGrip2);
+try{
+  let joystick1 = controller1.userData.gamepad.axes;
+  document.body.appendChild(" controller found");
+}catch{
+  document.body.appendChild( 'no controller');
+}
+
 
 function animatevr(){
   let moving = false;
   renderer.setAnimationLoop(() => {
     groups.position.y = -10;
     camera.position.y = 47;
-    let controller1 = renderer.xr.getController(0);
-    let controller2 = renderer.xr.getController(1);
-    let controllerGrip1 = renderer.xr.getControllerGrip(0);
-    let controllerGrip2 = renderer.xr.getControllerGrip(1);
-    // get the joystick position
-    try{
-      let joystick1 = controller1.userData.gamepad.axes;
-    }catch{
-      console.log("no joystick");
-    }
-    
-
-    scene.add(controller1);
-    scene.add(controller2);
-    scene.add(controllerGrip1);
-    scene.add(controllerGrip2);
     renderer.render(scene, camera);
   });
 }
