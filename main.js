@@ -312,7 +312,7 @@ function onSelectEnd(e) {
       const offset = cursorPos.addScaledVector(feetPos ,-1);
 
       // Do the locomotion
-      camera.position.add(offset);
+      // camera.position.add(offset);
 
       // clean up
       guidingController = null;
