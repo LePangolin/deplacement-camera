@@ -214,7 +214,7 @@ renderer.xr.setReferenceSpaceType("local");
 function animatevr(){
   renderer.setAnimationLoop(() => {
     groups.position.y = -1;
-    camera.lookAt(groups.position);
+    camera.position.y = 47;
     let controller1 = renderer.xr.getController(0);
     let controller2 = renderer.xr.getController(1);
     scene.add(controller1);
