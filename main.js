@@ -220,30 +220,7 @@ function animatevr(){
     let controller2 = renderer.xr.getController(1);
     let controllerGrip1 = renderer.xr.getControllerGrip(0);
     let controllerGrip2 = renderer.xr.getControllerGrip(1);
-    // if i move the joystick
-    if (controller1.axes[1] > 0.5) {
-      // if i am not already moving
-      if (!moving) {
-        // if i am not already at the top
-        if (groups.position.y < 0) {
-          // move up
-          groups.position.y += 0.1;
-          moving = true;
-        }
-      }
-    }
-    // if i move the joystick
-    if (controller1.axes[1] < -0.5) {
-      // if i am not already moving
-      if (!moving) {
-        // if i am not already at the bottom
-        if (groups.position.y > -10) {
-          // move down
-          groups.position.y -= 0.1;
-          moving = true;
-        }
-      }
-    }
+    console.log(controller1);
     scene.add(controller1);
     scene.add(controller2);
     scene.add(controllerGrip1);
