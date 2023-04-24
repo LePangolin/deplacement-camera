@@ -230,13 +230,19 @@ gripController1.addEventListener("selectstart", onSelectStart);
 gripController1.addEventListener("selectend", onSelectEnd);
 scene.add(gripController2);
 
+let geometry = new THREE.BoxGeometry(1, 1, 1);
+let material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+let cube = new THREE.Mesh(geometry, material);
+cube.position.set(0, 0, -5);
+
+
 let p = document.createElement("p");
 function onSelectStart(event) {
-  p.innerHTML = "selectstart";
+  scene.add(cube);
 }
 
 function onSelectEnd(event) {
-  p.innerHTML = "selectend";
+  scene.remove(cube);
 }
 
 document.body.appendChild(p);
