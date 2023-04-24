@@ -107,7 +107,7 @@ textureLoader.load(
       groundMaterial
     );
     groundMesh.rotation.x = -Math.PI / 2;
-    groundMesh.position.y = -0.1;
+    groundMesh.position.y = -10;
     scene.add(groundMesh);
     elementLoad++;
   },
@@ -130,7 +130,7 @@ textureLoader.load(
       skyMaterial
     );
     skyMesh.rotation.x = -Math.PI / 2;
-    skyMesh.position.y = 50;
+    skyMesh.position.y = 40;
     scene.add(skyMesh);
     elementLoad++;
   },
