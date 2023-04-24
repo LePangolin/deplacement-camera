@@ -10,9 +10,9 @@ import { FBXLoader } from "three/examples/jsm/loaders/FBXLoader";
 
 import { DRACOLoader } from "three/examples/jsm/loaders/DRACOLoader";
 
-import { VRButton } from 'three/addons/webxr/VRButton.js';
+import { VRButton } from "three/addons/webxr/VRButton.js";
 
-import { XRControllerModelFactory } from 'three/examples/jsm/webxr/XRControllerModelFactory.js';
+import { XRControllerModelFactory } from "three/examples/jsm/webxr/XRControllerModelFactory.js";
 
 import Stats from "three/examples/jsm/libs/stats.module.js";
 
@@ -139,12 +139,10 @@ textureLoader.load(
   }
 );
 
-
 for (let i = 0; i < 10; i++) {
   fbxLoader.load(
     "./sources/oak 01.fbx",
     (fbx) => {
-
       let randX = Math.random() * 400 - 100;
       let randZ = Math.random() * 400 - 100;
       fbx.position.set(randX, -10, randZ);
@@ -192,7 +190,6 @@ for (let i = 0; i < 10; i++) {
   );
 }
 
-
 loadingManager.onLoad = () => {
   console.log("loaded");
   animatevr();
@@ -203,14 +200,12 @@ const renderer = new THREE.WebGLRenderer({
   antialias: false,
 });
 
-
-
 renderer.setSize(window.innerWidth, window.innerHeight);
 renderer.setPixelRatio(window.devicePixelRatio);
 
 renderer.xr.enabled = true;
 renderer.xr.setReferenceSpaceType("local");
-document.body.appendChild( VRButton.createButton( renderer ) );
+document.body.appendChild(VRButton.createButton(renderer));
 let gripController1 = renderer.xr.getControllerGrip(0);
 
 const model1 = new XRControllerModelFactory();
@@ -220,12 +215,8 @@ let geometry = new THREE.BoxGeometry(1, 1, 1);
 let material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
 let cube = new THREE.Mesh(geometry, material);
 cube.position.set(0, 0, -5);
-gripController1.addEventListener("selectstart", (event) => {
-  scene.add(cube);
-});
-gripController1.addEventListener("selectend", (event) => {
-  scene.remove(cube);
-});
+gripController1.addEventListener("selectstart", onSelectStart);
+gripController1.addEventListener("selectend", onSelectEnd);
 
 scene.add(gripController1);
 
@@ -233,15 +224,90 @@ const gripController2 = renderer.xr.getControllerGrip(1);
 const model2 = new XRControllerModelFactory();
 const controllerModel2 = model2.createControllerModel(gripController2);
 gripController2.add(controllerModel2);
-gripController2.addEventListener("selectstart", (event) => {
-  scene.add(cube);
-});
-gripController2.addEventListener("selectend", (event) => {
-  scene.remove(cube);
-});
+gripController2.addEventListener("selectstart", onSelectStart);
+gripController2.addEventListener("selectend", onSelectEnd);
 scene.add(gripController2);
 
+const lineSegments = 10;
+const lineGeometry = new THREE.BufferGeometry();
+const lineGeometryVertices = new Float32Array((lineSegments + 1) * 3);
+lineGeometryVertices.fill(0);
+lineGeometry.setAttribute(
+  "position",
+  new THREE.BufferAttribute(lineGeometryVertices, 3)
+);
+const lineMaterial = new THREE.LineBasicMaterial({
+  color: 0x888888,
+  blending: 2,
+});
+const guideline = new THREE.Line(lineGeometry, lineMaterial);
+const guideLight = new THREE.PointLight(0xffeeaa, 0, 2);
+const guidingController = null;
+const guideSpriteTexture = new THREE.TextureLoader().load('./img/target.png');
+const guideSprite = new THREE.Mesh(
+    new THREE.PlaneGeometry(0.3, 0.3, 1, 1),
+    new THREE.MeshBasicMaterial({
+        map: guideSpriteTexture,
+        blending: 2,
+        color: 0x555555,
+        transparent: true
+    })
+);
 
+function positionAtT(inVec, t, p, v, g) {
+  inVec.copy(p);
+  inVec.addScaledVector(v, t);
+  inVec.addScaledVector(g, 0.5 * t ** 2);
+  return inVec;
+}
+
+function onSelectStart(event) {
+  // This is e.data is an XRInputSource and if
+  // it has a hand and being handled by hand tracking so do nothing
+  if (event && event.data && event.data.hand) {
+    return;
+  }
+
+  const controller = this;
+
+  console.log("startGuide", controller);
+
+  guidingController = controller;
+  guideLight.intensity = 1;
+  controller.add(guideline);
+  scene.add(guideSprite);
+}
+
+function onSelectEnd(e) {
+  if (guidingController === this) {
+  console.log("onSelectEnd", this);
+
+      // first work out vector from feet to cursor
+
+      // feet position
+      const feetPos = renderer.xr.getCamera(camera).getWorldPosition(tempVec);
+      feetPos.y = 0;
+
+      // cursor position
+      const p = guidingController.getWorldPosition(tempVecP);
+      const v = guidingController.getWorldDirection(tempVecV);
+      v.multiplyScalar(6);
+      const t = (-v.y  + Math.sqrt(v.y**2 - 2*p.y*g.y))/g.y;
+      const cursorPos = positionAtT(tempVec1,t,p,v,g);
+
+      // Offset
+      const offset = cursorPos.addScaledVector(feetPos ,-1);
+
+      // Do the locomotion
+      locomotion(offset);
+
+      // clean up
+      guidingController = null;
+      guideLight.intensity = 0;
+      this.remove(guideline);
+      scene.remove(guideSprite);
+  }
+}
 
 let p = document.createElement("p");
 function onSelectStart(event) {
@@ -254,9 +320,7 @@ function onSelectEnd(event) {
 
 document.body.appendChild(p);
 
-
-
-function animatevr(){
+function animatevr() {
   let moving = false;
 
   renderer.setAnimationLoop(() => {
@@ -265,11 +329,6 @@ function animatevr(){
     renderer.render(scene, camera);
   });
 }
-
-
-
-
-
 
 window.addEventListener("resize", () => {
   renderer.setSize(window.innerWidth, window.innerHeight);
@@ -301,7 +360,6 @@ raycaster = new THREE.Raycaster(
   10
 );
 
-
 // function animate() {
 //   requestAnimationFrame(animate);
 //   const time = performance.now();
@@ -309,7 +367,6 @@ raycaster = new THREE.Raycaster(
 //   carHitbox = new THREE.Box3().setFromObject(groups);
 //   carHitbox = carHitbox.expandByScalar(2);
 
-  
 //   carHitboxHelper = new THREE.Box3Helper(carHitbox, 0xffff00);
 //   if (carHitboxHelper) {
 //     scene.add(carHitboxHelper);
@@ -417,7 +474,6 @@ raycaster = new THREE.Raycaster(
 
 //   renderer.render(scene, camera);
 // }
-
 
 document.addEventListener("keydown", function (event) {
   if (event.code === "ArrowUp" || event.code === "KeyW") {
