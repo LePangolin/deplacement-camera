@@ -243,13 +243,6 @@ function onSelectEnd(event) {
   scene.remove(cube);
 }
 
-
-
-
-document.body.appendChild(p);
-
-
-
 function animatevr(){
   let moving = false;
 
