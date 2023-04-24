@@ -212,6 +212,7 @@ renderer.xr.setReferenceSpaceType("local");
 
 renderer.setAnimationLoop(() => {
 	requestAnimationFrame(animate);
+  groups.position.y = 0;
   camera.lookAt(
     new THREE.Vector3(groups.position.x, groups.position.y + 10, groups.position.z)
   );  
