@@ -217,8 +217,24 @@ function animatevr(){
     camera.position.y = 47;
     let controller1 = renderer.xr.getController(0);
     let controller2 = renderer.xr.getController(1);
+    let controllerGrip1 = renderer.xr.getControllerGrip(0);
+    let controllerGrip2 = renderer.xr.getControllerGrip(1);
+    controller1.addEventListener("selectstart", () => {
+      console.log("selectstart");
+    });
+    controller1.addEventListener("selectend", () => {
+      console.log("selectend");
+    });
+    controller2.addEventListener("selectstart", () => {
+      console.log("selectstart");
+    });
+    controller2.addEventListener("selectend", () => {
+      console.log("selectend");
+    });
     scene.add(controller1);
     scene.add(controller2);
+    scene.add(controllerGrip1);
+    scene.add(controllerGrip2);
     renderer.render(scene, camera);
   });
 }
