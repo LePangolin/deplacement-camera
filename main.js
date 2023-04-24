@@ -12,7 +12,7 @@ import { DRACOLoader } from "three/examples/jsm/loaders/DRACOLoader";
 
 import { VRButton } from 'three/addons/webxr/VRButton.js';
 
-import { XRControllerModelFactory } from 'three/addons/webxr/XRControllerModelFactory.js';
+import { XRControllerModelFactory } from 'three/examples/jsm/webxr/XRControllerModelFactory.js';
 
 import Stats from "three/examples/jsm/libs/stats.module.js";
 
@@ -201,7 +201,6 @@ loadingManager.onLoad = () => {
 const renderer = new THREE.WebGLRenderer({
   canvas: document.querySelector("#bg"),
   antialias: false,
-  alpha: true
 });
 
 
@@ -213,28 +212,17 @@ renderer.xr.enabled = true;
 renderer.xr.setReferenceSpaceType("local");
 document.body.appendChild( VRButton.createButton( renderer ) );
 let controller1 = renderer.xr.getController(0);
-let controller2 = renderer.xr.getController(1);
-let controllerGrip1 = renderer.xr.getControllerGrip(0);
-let controllerGrip2 = renderer.xr.getControllerGrip(1);
-// add enter vr button
+let gripController1 = renderer.xr.getControllerGrip(0);
 
-scene.add(controller1);
-scene.add(controller2);
-scene.add(controllerGrip1);
-scene.add(controllerGrip2);
-let p = document.createElement("p");
-try{
-  let joystick1 = controller1.userData.gamepad.axes;
-  p.innerHTML = "Joystick found"
-}catch{
-  p.innerHTML = "&nbsp;&nbsp;Joystick not found"
-}
-p.style.zIndex = "99999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999";
-document.body.appendChild(p);
+const model1 = new XRControllerModelFactory();
+const controllerModel1 = model1.createControllerModel(gripController1);
+gripController1.add(controllerModel1);
+scene.add(gripController1);
 
 
 function animatevr(){
   let moving = false;
+
   renderer.setAnimationLoop(() => {
     groups.position.y = -10;
     camera.position.y = 47;
