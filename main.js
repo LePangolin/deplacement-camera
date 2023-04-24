@@ -287,7 +287,6 @@ function onSelectStart(event) {
 
   guidingController = controller;
   guideLight.intensity = 1;
-  controller.add(guideline);
   scene.add(guideSprite);
 }
 
