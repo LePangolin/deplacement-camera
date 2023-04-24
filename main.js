@@ -345,10 +345,10 @@ function onSelectEnd(e) {
 
 function animatevr() {
   let moving = false;
-
+  groups.position.y = -10;
+  camera.position.y = 47;
   renderer.setAnimationLoop(() => {
-    groups.position.y = -10;
-    camera.position.y = 47;
+
     renderer.render(scene, camera);
   });
 }
