@@ -49,6 +49,19 @@ let threeHitbox = [];
 let prevTime = performance.now();
 const velocity = new THREE.Vector3();
 const direction = new THREE.Vector3();
+const blinkerSphereGeometry = new THREE.SphereGeometry(0.3, 16, 16);
+blinkerSphereGeometry.translate(0,0.3,0);
+const blinkerSphereMaterial = new THREE.MeshBasicMaterial({
+    side: BackSide,
+    color: 0x000000,
+    transparent: true
+});
+const blinkerSphere = new THREE.Mesh( blinkerSphereGeometry, blinkerSphereMaterial );
+blinkerSphere.rotation.set(Math.PI/2, 0, 0);
+blinkerSphere.position.set(0, 0, -0.3);
+blinkerSphere.visible = false;
+camera.add(blinkerSphere);
+blinkerSphereMaterial.renderOrder = -101;
 
 const camera = new THREE.PerspectiveCamera(
   75,
@@ -299,7 +312,7 @@ function onSelectEnd(e) {
       const offset = cursorPos.addScaledVector(feetPos ,-1);
 
       // Do the locomotion
-      locomotion(offset);
+      camera.position.add(offset);
 
       // clean up
       guidingController = null;
@@ -308,6 +321,27 @@ function onSelectEnd(e) {
       scene.remove(guideSprite);
   }
 }
+
+// function locomotion(offset) {
+
+//   blinkerSphere.visible = true;
+//   blinkerSphere.material.opacity = 0;
+//   new exports.TTween(blinkerSphere.material)
+//       .to({opacity: 1}, 200)
+//       .easing(exports.Easing.Quadratic.Out)
+//       .onComplete(function () {
+
+//           // Do the teleport
+//           camera.position.add(offset);
+
+//           // Fade back
+//           new exports.Tween(blinkerSphere.material)
+//           .to({opacity: 0}, 200)
+//           .onComplete(() => blinkerSphere.visible = false)
+//           .start();
+//       })
+//       .start();
+// }
 
 function animatevr() {
   let moving = false;
