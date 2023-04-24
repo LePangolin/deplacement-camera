@@ -230,14 +230,16 @@ gripController1.addEventListener("selectstart", onSelectStart);
 gripController1.addEventListener("selectend", onSelectEnd);
 scene.add(gripController2);
 
-
+let p = document.createElement("p");
 function onSelectStart(event) {
-  console.log(event)
+  p.innerHTML = "selectstart";
 }
 
 function onSelectEnd(event) {
-  console.log(event)
+  p.innerHTML = "selectend";
 }
+
+document.body.appendChild(p);
 
 
 
