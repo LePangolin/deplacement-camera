@@ -22,6 +22,7 @@ let moveLeft = false;
 let moveRight = false;
 
 let INTERSECTION = null;
+let tempMatrix = new THREE.Matrix4();
 let points = 0;
 let elementLoad = 0;
 const groups = new THREE.Group();
@@ -49,7 +50,7 @@ let threeHitbox = [];
 
 let prevTime = performance.now();
 const velocity = new THREE.Vector3();
-const direction = new THREE.Vector3();
+const direction = new THREE.Vector3(); 
 
 const camera = new THREE.PerspectiveCamera(
   75,
