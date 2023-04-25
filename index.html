@@ -46,6 +46,7 @@
 			import { VRButton } from 'three/addons/webxr/VRButton.js';
 			import { XRControllerModelFactory } from 'three/addons/webxr/XRControllerModelFactory.js';
 
+
 			let camera, scene, raycaster, renderer;
 			let controller1, controller2;
 			let controllerGrip1, controllerGrip2;
@@ -84,11 +85,22 @@
 				);
 				scene.add( marker );
 
-				floor = new THREE.Mesh(
-					new THREE.PlaneGeometry( 4.8, 4.8, 2, 2 ).rotateX( - Math.PI / 2 ),
-					new THREE.MeshBasicMaterial( { color: 0x808080, transparent: true, opacity: 0.25 } )
-				);
-				scene.add( floor );
+				// floor = new THREE.Mesh(
+				// 	new THREE.PlaneGeometry( 4.8, 4.8, 2, 2 ).rotateX( - Math.PI / 2 ),
+				// 	new THREE.MeshBasicMaterial( { color: 0x808080, transparent: true, opacity: 0.25 } )
+				// );
+				// scene.add( floor );
+
+        let floorTexture = new THREE.TextureLoader().load( './img/depositphotos_10589691-stock-photo-ground-background.jpg' );
+        floorTexture.wrapS = floorTexture.wrapT = THREE.RepeatWrapping;
+        floorTexture.repeat.set( 10, 10 );
+        let floorMaterial = new THREE.MeshBasicMaterial( { map: floorTexture, side: THREE.DoubleSide } );
+        let floorGeometry = new THREE.PlaneGeometry(100, 100, 10, 10);
+        floor = new THREE.Mesh(floorGeometry, floorMaterial);
+        floor.position.y = -0.5;
+        floor.rotation.x = Math.PI / 2;
+        scene.add(floor);
+
 
 				raycaster = new THREE.Raycaster();
 
@@ -234,6 +246,7 @@
 					raycaster.ray.direction.set( 0, 0, - 1 ).applyMatrix4( tempMatrix );
 
 					const intersects = raycaster.intersectObjects( [ floor ] );
+          console.log(intersects);
 
 					if ( intersects.length > 0 ) {
 
