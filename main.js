@@ -140,6 +140,12 @@ textureLoader.load(
   }
 );
 
+let marker = new THREE.Mesh(
+  new THREE.CircleGeometry( 0.25, 32 ).rotateX( - Math.PI / 2 ),
+  new THREE.MeshBasicMaterial( { color: 0x808080 } )
+);
+scene.add( marker );
+
 for (let i = 0; i < 10; i++) {
   fbxLoader.load(
     "./sources/oak 01.fbx",
