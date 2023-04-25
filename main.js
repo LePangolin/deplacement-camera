@@ -81,7 +81,7 @@ let floor = new THREE.Mesh(
   new THREE.PlaneGeometry( 4.8, 4.8, 2, 2 ).rotateX( - Math.PI / 2 ),
   new THREE.MeshBasicMaterial( { color: 0x808080, transparent: true, opacity: 0.25 } )
 );
-floor.position.y = -1;
+floor.position.y = -0.9;
 scene.add( floor );
 
 let cube = new THREE.Mesh(
