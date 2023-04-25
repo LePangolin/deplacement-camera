@@ -62,8 +62,11 @@ camera.position.setY(12);
 camera.position.setZ(-4);
 camera.rotateY(3.15);
 
-// const cameraVR = new THREE.StereoCamera();
-// const controlsVR = new THREE.VRControls(cameraVR);
+room = new THREE.LineSegments(
+  new BoxLineGeometry( 6, 6, 6, 10, 10, 10 ).translate( 0, 3, 0 ),
+  new THREE.LineBasicMaterial( { color: 0x808080 } )
+);
+scene.add( room );
 
 const pointLight = new THREE.PointLight(0xffffff);
 pointLight.position.set(5, 5, 5);
