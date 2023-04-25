@@ -14,6 +14,8 @@ import { VRButton } from "three/addons/webxr/VRButton.js";
 
 import { XRControllerModelFactory } from "three/examples/jsm/webxr/XRControllerModelFactory.js";
 
+import { BoxLineGeometry } from 'three/addons/geometries/BoxLineGeometry.js';
+
 import Stats from "three/examples/jsm/libs/stats.module.js";
 
 let moveForward = false;
@@ -62,7 +64,7 @@ camera.position.setY(12);
 camera.position.setZ(-4);
 camera.rotateY(3.15);
 
-room = new THREE.LineSegments(
+let room = new THREE.LineSegments(
   new BoxLineGeometry( 6, 6, 6, 10, 10, 10 ).translate( 0, 3, 0 ),
   new THREE.LineBasicMaterial( { color: 0x808080 } )
 );
