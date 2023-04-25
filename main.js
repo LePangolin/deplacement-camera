@@ -253,7 +253,7 @@ function onSelectStart() {
 
 function onSelectEnd() {
   this.userData.isSelecting = false;
-
+  console.log(INTERSECTION);
   if (INTERSECTION) {
     const offsetPosition = {
       x: -INTERSECTION.x,
