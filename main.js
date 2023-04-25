@@ -290,7 +290,7 @@ controller2.addEventListener("disconnected", function () {
   this.remove(this.children[0]);
 });
 scene.add(controller2);
-renderer.xr.cameraAutoUpdate = false;
+
 // The XRControllerModelFactory will automatically fetch controller models
 // that match what the user is holding as closely as possible. The models
 // should be attached to the object returned from getControllerGrip in
@@ -355,7 +355,6 @@ function animate() {
 }
 
 function render() {
-  camera.position.y = 12;
   INTERSECTION = undefined;
 
   if (controller1.userData.isSelecting === true) {
