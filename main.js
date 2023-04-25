@@ -21,6 +21,7 @@ let moveBackward = false;
 let moveLeft = false;
 let moveRight = false;
 
+
 let points = 0;
 let elementLoad = 0;
 const groups = new THREE.Group();
@@ -41,7 +42,7 @@ let carHitbox;
 
 let carHitboxHelper;
 
-let raycaster;
+let raycaster = new THREE.Raycaster();
 const objects = [];
 
 let threeHitbox = [];
