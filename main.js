@@ -356,6 +356,7 @@ function animate() {
 
 function render() {
   INTERSECTION = undefined;
+  renderer.xr.cameraAutoUpdate = false;
 
   if (controller1.userData.isSelecting === true) {
     tempMatrix.identity().extractRotation(controller1.matrixWorld);
