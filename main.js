@@ -252,7 +252,7 @@ function onSelectEnd() {
   }
 }
 
-controller1 = renderer.xr.getController(0);
+let controller1 = renderer.xr.getController(0);
 controller1.addEventListener("selectstart", onSelectStart);
 controller1.addEventListener("selectend", onSelectEnd);
 controller1.addEventListener("connected", function (event) {
@@ -263,7 +263,7 @@ controller1.addEventListener("disconnected", function () {
 });
 scene.add(controller1);
 
-controller2 = renderer.xr.getController(1);
+let controller2 = renderer.xr.getController(1);
 controller2.addEventListener("selectstart", onSelectStart);
 controller2.addEventListener("selectend", onSelectEnd);
 controller2.addEventListener("connected", function (event) {
@@ -281,13 +281,13 @@ scene.add(controller2);
 
 const controllerModelFactory = new XRControllerModelFactory();
 
-controllerGrip1 = renderer.xr.getControllerGrip(0);
+let controllerGrip1 = renderer.xr.getControllerGrip(0);
 controllerGrip1.add(
   controllerModelFactory.createControllerModel(controllerGrip1)
 );
 scene.add(controllerGrip1);
 
-controllerGrip2 = renderer.xr.getControllerGrip(1);
+let controllerGrip2 = renderer.xr.getControllerGrip(1);
 controllerGrip2.add(
   controllerModelFactory.createControllerModel(controllerGrip2)
 );
