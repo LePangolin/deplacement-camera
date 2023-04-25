@@ -21,7 +21,7 @@ let moveBackward = false;
 let moveLeft = false;
 let moveRight = false;
 
-
+let INTERSECTION = null;
 let points = 0;
 let elementLoad = 0;
 const groups = new THREE.Group();
@@ -193,7 +193,7 @@ for (let i = 0; i < 10; i++) {
 
 loadingManager.onLoad = () => {
   console.log("loaded");
-  animatevr();
+  animate();
 };
 
 const renderer = new THREE.WebGLRenderer({
@@ -555,6 +555,3 @@ document.addEventListener("keyup", function (event) {
     moveRight = false;
   }
 });
-
-
-animate();
