@@ -100,28 +100,28 @@ gltfLoader.load(
   }
 );
 
-textureLoader.load(
-  "./img/depositphotos_10589691-stock-photo-ground-background.jpg",
-  (texture) => {
-    texture.wrapS = THREE.RepeatWrapping;
-    texture.wrapT = THREE.RepeatWrapping;
-    texture.repeat.set(100, 100);
-    const groundMaterial = new THREE.MeshLambertMaterial({
-      map: texture,
-    });
-    const groundMesh = new THREE.Mesh(
-      new THREE.PlaneGeometry(10000, 10000),
-      groundMaterial
-    );
-    groundMesh.rotation.x = -Math.PI / 2;
-    groundMesh.position.y = -10;
-    scene.add(groundMesh);
-    elementLoad++;
-  },
-  (xhr) => {
-    console.log((xhr.loaded / xhr.total) * 100 + "% loaded");
-  }
-);
+// textureLoader.load(
+//   "./img/depositphotos_10589691-stock-photo-ground-background.jpg",
+//   (texture) => {
+//     texture.wrapS = THREE.RepeatWrapping;
+//     texture.wrapT = THREE.RepeatWrapping;
+//     texture.repeat.set(100, 100);
+//     const groundMaterial = new THREE.MeshLambertMaterial({
+//       map: texture,
+//     });
+//     const groundMesh = new THREE.Mesh(
+//       new THREE.PlaneGeometry(10000, 10000),
+//       groundMaterial
+//     );
+//     groundMesh.rotation.x = -Math.PI / 2;
+//     groundMesh.position.y = -10;
+//     scene.add(groundMesh);
+//     elementLoad++;
+//   },
+//   (xhr) => {
+//     console.log((xhr.loaded / xhr.total) * 100 + "% loaded");
+//   }
+// );
 
 textureLoader.load(
   "./img/istockphoto-825778252-612x612.jpg",
