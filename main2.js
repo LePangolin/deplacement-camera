@@ -26,7 +26,7 @@ function init() {
     50,
     window.innerWidth / window.innerHeight,
     0.1,
-    10
+    1000
   );
   camera.position.set(0, 1, 3);
 
@@ -99,9 +99,10 @@ function init() {
 
   raycaster = new THREE.Raycaster();
 
-  renderer = new THREE.WebGLRenderer({ antialias: true });
+  renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
   renderer.setPixelRatio(window.devicePixelRatio);
   renderer.setSize(window.innerWidth, window.innerHeight);
+
   renderer.outputEncoding = THREE.sRGBEncoding;
 
   renderer.xr.addEventListener(
