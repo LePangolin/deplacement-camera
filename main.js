@@ -72,6 +72,11 @@ scene.add(pointLight);
 
 const ambientLight = new THREE.AmbientLight(0xffffff);
 scene.add(ambientLight);
+let floor = new THREE.Mesh(
+  new THREE.PlaneGeometry( 4.8, 4.8, 2, 2 ).rotateX( - Math.PI / 2 ),
+  new THREE.MeshBasicMaterial( { color: 0x808080, transparent: true, opacity: 0.25 } )
+);
+scene.add( floor );
 
 function init() {}
 
