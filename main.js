@@ -378,12 +378,6 @@ function render() {
   } else if (controller2.userData.isSelecting === true) {
     tempMatrix.identity().extractRotation(controller2.matrixWorld);
 
-    mouse.x = (e.clientX / window.innerWidth) * 2 - 1;
-    mouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
-
-    console.log(mouse);
-
-    raycaster.setFromCamera(mouse, camera);
 
     // raycaster.ray.origin.setFromMatrixPosition(controller2.matrixWorld);
     // raycaster.ray.direction.set(0, 0, -1).applyMatrix4(tempMatrix);
