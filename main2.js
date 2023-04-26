@@ -241,12 +241,18 @@ function animate() {
 
 function render() {
   INTERSECTION = undefined;
-  if(controller1.gamepad){
-    if(controller1.gamepad.axes[1] > 0.5){
-      let cube = new THREE.Mesh(new THREE.BoxGeometry(0.1, 0.1, 0.1), new THREE.MeshBasicMaterial({color: 0x00ff00}));
-      cube.position.set(0, 0, -1);
-      scene.add(cube);
-    }
+  if (controller1.gamepad) {
+    // print text in vr environment
+    document.getElementById("debug").innerHTML = controller1.gamepad.axes[1];
+    let canvasTexture = new THREE.CanvasTexture(
+      document.getElementById("debug")
+    );
+    let material = new THREE.MeshBasicMaterial({ map: canvasTexture });
+    let plane = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), material);
+    plane.position.set(0, 0, -1);
+    plane.rotation.set(0, 0, 0);
+    plane.scale.set(0.1, 0.1, 0.1);
+    scene.add(plane);
   }
 
   if (controller1.userData.isSelecting === true) {
