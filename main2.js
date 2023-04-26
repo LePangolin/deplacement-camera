@@ -251,7 +251,7 @@ function render() {
     const context = canvas.getContext("2d");
     context.font = "48px Arial";
     context.fillStyle = "white";
-    context.fillText(JSON.stringify(controller1.gamepad.axes), 100, 100);
+    context.fillText(controller1.gamepad.axes[1], 100, 500);
 
     // create a texture from the canvas
     const texture = new THREE.CanvasTexture(canvas);
