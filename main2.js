@@ -284,8 +284,7 @@ let cibleMesh = new THREE.Mesh(
 );
 
 let lastPosition;
-let lastTime = Date.now();
-
+let lastTime = 0;
 function render() {
   INTERSECTION = undefined;
   // line camera
@@ -308,18 +307,19 @@ function render() {
   raycaster.ray.direction.set(0, 0, -1).applyMatrix4(tempMatrix);
   const intersects = raycaster.intersectObjects([floor]);
   if (intersects.length > 0) {
-    console.log(lastPosition);
     if(lastPosition){
       // si le point d'intersection n'est pas trop éloigné du dernier point d'intersection
       if(intersects[0].point.distanceTo(lastPosition) < 0.5){
-        // on compte 3 secondes
-        if(Date.now() - lastTime < 3000){
+        console.log(lastTime);
+        if(lastTime == 500){
           // on change la couleur de la cible
           cibleMesh.material.color.set(0x00ff00);
+        }else{
+          lastTime ++;
         }
       }else{
         // on réinitialise le compteur
-        lastTime = Date.now();
+        lastTime = 0;
         // on réinitialise la couleur de la cible
         cibleMesh.material.color.set(0xff0000);
         // on met a jour la dernière position
@@ -339,7 +339,7 @@ function render() {
     );
     scene.add(cibleMesh)  
   }else{
-    lastTime = Date.now();
+    lastTime = 0;
     scene.remove(cibleMesh);
   }
 
@@ -351,7 +351,6 @@ function render() {
     raycaster.ray.direction.set(0, 0, -1).applyMatrix4(tempMatrix);
 
     const intersects = raycaster.intersectObjects([floor]);
-    console.log(intersects);
 
     if (intersects.length > 0) {
       INTERSECTION = intersects[0].point;
