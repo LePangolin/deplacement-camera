@@ -316,8 +316,18 @@ function render() {
   if (intersects.length > 0) {
     if (lastPosition) {
       // si le point d'intersection n'est pas trop éloigné du dernier point d'intersection
-      if (intersects[0].point.distanceTo(lastPosition) < 0.5) {
-        if (lastTime == 350) {
+      if (intersects[0].point.distanceTo(lastPosition) < 1) {
+        if(lastTime == 75){
+            // change color in orange
+            cibleMesh.material.color.set(0xffa500);
+        } else if (lastTime == 150) {
+          // change color in yellow
+          cibleMesh.material.color.set(0xffff00);
+        } else if (lastTime == 200) {
+          // change color in green
+          cibleMesh.material.color.set(0x00ff00);
+        }
+        if (lastTime == 250) {
           const offsetPosition = {
             x: -intersects[0].point.x,
             y: -intersects[0].point.y,
@@ -360,6 +370,7 @@ function render() {
   } else {
     lastTime = 0;
     scene.remove(cibleMesh);
+    scene.remove(line);
   }
 
   if (controller1.userData.isSelecting === true) {
