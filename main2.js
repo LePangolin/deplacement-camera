@@ -242,19 +242,26 @@ function animate() {
 function render() {
   INTERSECTION = undefined;
   if (controller1.gamepad) {
-    // print text in vr environment
-    document.getElementById("debug").innerHTML = controller1.gamepad.axes[1];
-    let canvasTexture = new THREE.CanvasTexture(
-      document.getElementById("debug")
-    );
-    let material = new THREE.MeshBasicMaterial({ map: canvasTexture });
+    // create a canvas element
+    const canvas = document.createElement("canvas");
+    canvas.width = 512;
+    canvas.height = 512;
+
+    // get the canvas context
+    const context = canvas.getContext("2d");
+    context.font = "48px Arial";
+    context.fillStyle = "white";
+    context.fillText(controller1.gamepad.axes[1], 100, 100);
+
+    // create a texture from the canvas
+    const texture = new THREE.CanvasTexture(canvas);
+
+    // create a sprite and add it to the scene
     const spriteMaterial = new THREE.SpriteMaterial({
-      map: canvasTexture,
-      color: 0xffffff,
+      map: texture,
     });
     const sprite = new THREE.Sprite(spriteMaterial);
-    sprite.scale.set(0.5, 0.5, 0.5);
-    sprite.position.set(0, 0, -0.5).applyMatrix4(controller1.matrixWorld);
+    sprite.scale.set(2, 2, 2);
     scene.add(sprite);
   }
 
