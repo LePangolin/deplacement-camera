@@ -125,7 +125,6 @@ function init() {
   renderer.outputEncoding = THREE.sRGBEncoding;
 
   renderer.xr.addEventListener("sessionstart", (event) => {
-
     baseReferenceSpace = renderer.xr.getReferenceSpace();
   });
   renderer.xr.enabled = true;
@@ -272,7 +271,11 @@ let lineMaterial = new THREE.LineBasicMaterial({
 });
 
 let line = new THREE.Line(lineCamera, lineMaterial);
-line.position.set(renderer.xr.getCamera(camera).position.x, renderer.xr.getCamera(camera).position.y, renderer.xr.getCamera(camera).position.z);
+line.position.set(
+  renderer.xr.getCamera(camera).position.x,
+  renderer.xr.getCamera(camera).position.y,
+  renderer.xr.getCamera(camera).position.z
+);
 line.rotation.y = renderer.xr.getCamera(camera).rotation.y;
 line.rotation.x = renderer.xr.getCamera(camera).rotation.x;
 line.rotation.z = renderer.xr.getCamera(camera).rotation.z;
@@ -288,10 +291,14 @@ let lastTime = 0;
 function render() {
   INTERSECTION = undefined;
   // line camera
-  if(line){
+  if (line) {
     scene.remove(line);
     line = new THREE.Line(lineCamera, lineMaterial);
-    line.position.set(renderer.xr.getCamera(camera).position.x, renderer.xr.getCamera(camera).position.y, renderer.xr.getCamera(camera).position.z);
+    line.position.set(
+      renderer.xr.getCamera(camera).position.x,
+      renderer.xr.getCamera(camera).position.y,
+      renderer.xr.getCamera(camera).position.z
+    );
     line.rotation.y = renderer.xr.getCamera(camera).rotation.y;
     line.rotation.x = renderer.xr.getCamera(camera).rotation.x;
     line.rotation.z = renderer.xr.getCamera(camera).rotation.z;
@@ -307,17 +314,29 @@ function render() {
   raycaster.ray.direction.set(0, 0, -1).applyMatrix4(tempMatrix);
   const intersects = raycaster.intersectObjects([floor]);
   if (intersects.length > 0) {
-    if(lastPosition){
+    if (lastPosition) {
       // si le point d'intersection n'est pas trop éloigné du dernier point d'intersection
-      if(intersects[0].point.distanceTo(lastPosition) < 0.5){
-        console.log(lastTime);
-        if(lastTime == 500){
-          // on change la couleur de la cible
-          cibleMesh.material.color.set(0x00ff00);
-        }else{
-          lastTime ++;
+      if (intersects[0].point.distanceTo(lastPosition) < 0.5) {
+        if (lastTime == 350) {
+          const offsetPosition = {
+            x: -intersects[0].point.x,
+            y: -intersects[0].point.y,
+            z: -intersects[0].point.z,
+            w: 1,
+          };
+          const offsetRotation = new THREE.Quaternion();
+          const transform = new XRRigidTransform(
+            offsetPosition,
+            offsetRotation
+          );
+          const teleportSpaceOffset =
+            baseReferenceSpace.getOffsetReferenceSpace(transform);
+
+          renderer.xr.setReferenceSpace(teleportSpaceOffset);
+        } else {
+          lastTime++;
         }
-      }else{
+      } else {
         // on réinitialise le compteur
         lastTime = 0;
         // on réinitialise la couleur de la cible
@@ -325,11 +344,11 @@ function render() {
         // on met a jour la dernière position
         lastPosition = intersects[0].point;
       }
-    }else{
+    } else {
       lastPosition = intersects[0].point;
     }
     let intersesctionPoint = intersects[0].point;
-    if(cibleMesh){
+    if (cibleMesh) {
       scene.remove(cibleMesh);
     }
     cibleMesh.position.set(
@@ -337,12 +356,11 @@ function render() {
       intersesctionPoint.y,
       intersesctionPoint.z
     );
-    scene.add(cibleMesh)  
-  }else{
+    scene.add(cibleMesh);
+  } else {
     lastTime = 0;
     scene.remove(cibleMesh);
   }
-
 
   if (controller1.userData.isSelecting === true) {
     tempMatrix.identity().extractRotation(controller1.matrixWorld);
