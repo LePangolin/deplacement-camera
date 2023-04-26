@@ -273,7 +273,9 @@ let lineMaterial = new THREE.LineBasicMaterial({
 
 let line = new THREE.Line(lineCamera, lineMaterial);
 line.position.set(renderer.xr.getCamera(camera).position.x, renderer.xr.getCamera(camera).position.y, renderer.xr.getCamera(camera).position.z);
-line.rotation.y = 0;
+line.rotation.y = renderer.xr.getCamera(camera).rotation.y;
+line.rotation.x = renderer.xr.getCamera(camera).rotation.x;
+line.rotation.z = renderer.xr.getCamera(camera).rotation.z;
 scene.add(line);
 
 function render() {
@@ -283,7 +285,9 @@ function render() {
     scene.remove(line);
     line = new THREE.Line(lineCamera, lineMaterial);
     line.position.set(renderer.xr.getCamera(camera).position.x, renderer.xr.getCamera(camera).position.y, renderer.xr.getCamera(camera).position.z);
-    line.rotation.y = 0;
+    line.rotation.y = renderer.xr.getCamera(camera).rotation.y;
+    line.rotation.x = renderer.xr.getCamera(camera).rotation.x;
+    line.rotation.z = renderer.xr.getCamera(camera).rotation.z;
     scene.add(line);
   }
 
