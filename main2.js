@@ -10,6 +10,8 @@ let camera, scene, raycaster, renderer;
 let controller1, controller2;
 let controllerGrip1, controllerGrip2;
 
+let gamepad1, gamepad2;
+let axis1, axis2;
 let marker, floor, baseReferenceSpace;
 
 let INTERSECTION;
@@ -145,6 +147,10 @@ function init() {
   controller1.addEventListener("connected", function (event) {
     this.add(buildController(event.data));
   });
+  controller1.addEventListener("connected", function (event) {
+    controller1.gamepad = event.data.gamepad;
+    axis1 = controller1.gamepad.axes[1];
+  });
   controller1.addEventListener("disconnected", function () {
     this.remove(this.children[0]);
   });
@@ -155,6 +161,9 @@ function init() {
   controller2.addEventListener("selectend", onSelectEnd);
   controller2.addEventListener("connected", function (event) {
     this.add(buildController(event.data));
+  });
+  controller2.addEventListener("connected", function (event) {
+    controller2.gamepad = event.data.gamepad;
   });
   controller2.addEventListener("disconnected", function () {
     this.remove(this.children[0]);
@@ -232,6 +241,13 @@ function animate() {
 
 function render() {
   INTERSECTION = undefined;
+  if(controller1.gamepad){
+    if(controller1.gamepad.axes[1] > 0.5){
+      let cube = new THREE.Mesh(new THREE.BoxGeometry(0.1, 0.1, 0.1), new THREE.MeshBasicMaterial({color: 0x00ff00}));
+      cube.position.set(0, 0, -1);
+      scene.add(cube);
+    }
+  }
 
   if (controller1.userData.isSelecting === true) {
     tempMatrix.identity().extractRotation(controller1.matrixWorld);
