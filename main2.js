@@ -11,7 +11,6 @@ let controller1, controller2;
 let controllerGrip1, controllerGrip2;
 
 let gamepad1, gamepad2;
-let deplacement = 0.1;
 let axis1, axis2;
 let marker, floor, baseReferenceSpace;
 
@@ -32,6 +31,23 @@ function init() {
     1000
   );
   camera.position.set(0, 1, 3);
+  const buffer = new THREE.BufferGeometry();
+  buffer.setAttribute(
+    "position",
+    new THREE.Float32BufferAttribute([0, 0, 0, 0, 0, -1], 3)
+  );
+  buffer.setAttribute(
+    "color",
+    new THREE.Float32BufferAttribute([0.5, 0.5, 0.5, 0, 0, 0], 3)
+  );
+
+  let matbuffer = new THREE.LineBasicMaterial({
+    vertexColors: true,
+    blending: THREE.AdditiveBlending,
+  });
+
+  let bufferline = new THREE.Line(buffer, matbuffer);
+  camera.add(bufferline);
 
   // room = new THREE.LineSegments(
   // 	new BoxLineGeometry( 6, 6, 6, 10, 10, 10 ).translate( 0, 3, 0 ),
@@ -108,10 +124,10 @@ function init() {
 
   renderer.outputEncoding = THREE.sRGBEncoding;
 
-  renderer.xr.addEventListener(
-    "sessionstart",
-    () => (baseReferenceSpace = renderer.xr.getReferenceSpace())
-  );
+  renderer.xr.addEventListener("sessionstart", (event) => {
+
+    baseReferenceSpace = renderer.xr.getReferenceSpace();
+  });
   renderer.xr.enabled = true;
 
   document.body.appendChild(renderer.domElement);
@@ -143,13 +159,8 @@ function init() {
   }
 
   controller1 = renderer.xr.getController(0);
-  deplacement = renderer.xr.getCamera(camera).position.x;
-  controller1.addEventListener("selectstart", () => {
-    controller1.userData.isSelecting = true;
-  });
-  controller1.addEventListener("selectend", () => {
-    controller1.userData.isSelecting = false;
-  });
+  controller1.addEventListener("selectstart", onSelectStart);
+  controller1.addEventListener("selectend", onSelectEnd);
   controller1.addEventListener("connected", function (event) {
     this.add(buildController(event.data));
   });
@@ -245,53 +256,59 @@ function animate() {
   renderer.setAnimationLoop(render);
 }
 
+let lineCamera = new THREE.BufferGeometry();
+lineCamera.setAttribute(
+  "position",
+  new THREE.Float32BufferAttribute([0, 0, 0, 0, 0, -1], 3)
+);
+lineCamera.setAttribute(
+  "color",
+  new THREE.Float32BufferAttribute([0.5, 0.5, 0.5, 0, 0, 0], 3)
+);
+
+let lineMaterial = new THREE.LineBasicMaterial({
+  vertexColors: true,
+  blending: THREE.AdditiveBlending,
+});
+
+let line = new THREE.Line(lineCamera, lineMaterial);
+line.position.set(renderer.xr.getCamera(camera).position.x, renderer.xr.getCamera(camera).position.y, renderer.xr.getCamera(camera).position.z);
+line.rotation.y = 0;
+scene.add(line);
+
 function render() {
   INTERSECTION = undefined;
-  if (controller1.gamepad) {
-    // create a canvas element
-    const canvas = document.createElement("canvas");
-    canvas.width = 512;
-    canvas.height = 512;
-
-    // get the canvas context
-    const context = canvas.getContext("2d");
-    context.font = "48px Arial";
-    context.fillStyle = "white";
-    context.fillText(controller1.gamepad.axes[1], 100, 500);
-
-    // create a texture from the canvas
-    const texture = new THREE.CanvasTexture(canvas);
-
-    // create a sprite and add it to the scene
-    const spriteMaterial = new THREE.SpriteMaterial({
-      map: texture,
-    });
-    const sprite = new THREE.Sprite(spriteMaterial);
-    sprite.scale.set(2, 2, 2);
-    scene.add(sprite);
+  // line camera
+  if(line){
+    scene.remove(line);
+    line = new THREE.Line(lineCamera, lineMaterial);
+    line.position.set(renderer.xr.getCamera(camera).position.x, renderer.xr.getCamera(camera).position.y, renderer.xr.getCamera(camera).position.z);
+    line.rotation.y = 0;
+    scene.add(line);
   }
 
+  tempMatrix
+    .identity()
+    .extractRotation(renderer.xr.getCamera(camera).matrixWorld);
+  raycaster.ray.origin.setFromMatrixPosition(
+    renderer.xr.getCamera(camera).matrixWorld
+  );
+  raycaster.ray.direction.set(0, 0, -1).applyMatrix4(tempMatrix);
+  const intersects = raycaster.intersectObjects([floor]);
+
+
   if (controller1.userData.isSelecting === true) {
-    // tempMatrix.identity().extractRotation(controller1.matrixWorld);
-    // raycaster.ray.origin.setFromMatrixPosition(controller1.matrixWorld);
-    // raycaster.ray.direction.set(0, 0, -1).applyMatrix4(tempMatrix);
-    // const intersects = raycaster.intersectObjects([floor]);
-    // console.log(intersects);
-    // if (intersects.length > 0) {
-    //   INTERSECTION = intersects[0].point;
-    // }
-    deplacement += 0.0001;
-    const offsetPosition = {
-      x: renderer.xr.getCamera(camera).position.x,
-      y: renderer.xr.getCamera(camera).position.y,
-      z: deplacement,
-      w: 1,
-    };
-    const offsetRotation = new THREE.Quaternion();
-    const transform = new XRRigidTransform(offsetPosition, offsetRotation);
-    const teleportSpaceOffset = baseReferenceSpace.getOffsetReferenceSpace(transform);
-    renderer.xr.setReferenceSpace(teleportSpaceOffset);
-    baseReferenceSpace = teleportSpaceOffset;
+    tempMatrix.identity().extractRotation(controller1.matrixWorld);
+
+    raycaster.ray.origin.setFromMatrixPosition(controller1.matrixWorld);
+    raycaster.ray.direction.set(0, 0, -1).applyMatrix4(tempMatrix);
+
+    const intersects = raycaster.intersectObjects([floor]);
+    console.log(intersects);
+
+    if (intersects.length > 0) {
+      INTERSECTION = intersects[0].point;
+    }
   } else if (controller2.userData.isSelecting === true) {
     tempMatrix.identity().extractRotation(controller2.matrixWorld);
 
