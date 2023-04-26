@@ -278,6 +278,11 @@ line.rotation.x = renderer.xr.getCamera(camera).rotation.x;
 line.rotation.z = renderer.xr.getCamera(camera).rotation.z;
 scene.add(line);
 
+let cibleMesh = new THREE.Mesh(
+  new THREE.SphereGeometry(0.1, 32, 32),
+  new THREE.MeshBasicMaterial({ color: 0xff0000 })
+);
+
 function render() {
   INTERSECTION = undefined;
   // line camera
@@ -299,6 +304,18 @@ function render() {
   );
   raycaster.ray.direction.set(0, 0, -1).applyMatrix4(tempMatrix);
   const intersects = raycaster.intersectObjects([floor]);
+  if (intersects.length > 0) {
+    let intersesctionPoint = intersects[0].point;
+    if(cibleMesh){
+      scene.remove(cibleMesh);
+    }
+    cibleMesh.position.set(
+      intersesctionPoint.x,
+      intersesctionPoint.y,
+      intersesctionPoint.z
+    );
+    scene.add(cibleMesh)  
+  }
 
 
   if (controller1.userData.isSelecting === true) {
