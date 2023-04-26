@@ -248,11 +248,14 @@ function render() {
       document.getElementById("debug")
     );
     let material = new THREE.MeshBasicMaterial({ map: canvasTexture });
-    let plane = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), material);
-    plane.position.set(0, 0, -1);
-    plane.rotation.set(0, 0, 0);
-    plane.scale.set(0.1, 0.1, 0.1);
-    scene.add(plane);
+    const spriteMaterial = new THREE.SpriteMaterial({
+      map: canvasTexture,
+      color: 0xffffff,
+    });
+    const sprite = new THREE.Sprite(spriteMaterial);
+    sprite.scale.set(0.5, 0.5, 0.5);
+    sprite.position.set(0, 0, -0.5).applyMatrix4(controller1.matrixWorld);
+    scene.add(sprite);
   }
 
   if (controller1.userData.isSelecting === true) {
