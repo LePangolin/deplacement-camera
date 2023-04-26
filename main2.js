@@ -11,6 +11,7 @@ let controller1, controller2;
 let controllerGrip1, controllerGrip2;
 
 let gamepad1, gamepad2;
+let deplacement = 0.1;
 let axis1, axis2;
 let marker, floor, baseReferenceSpace;
 
@@ -142,8 +143,13 @@ function init() {
   }
 
   controller1 = renderer.xr.getController(0);
-  controller1.addEventListener("selectstart", onSelectStart);
-  controller1.addEventListener("selectend", onSelectEnd);
+  deplacement = renderer.xr.getCamera(camera).position.x;
+  controller1.addEventListener("selectstart", () => {
+    controller1.userData.isSelecting = true;
+  });
+  controller1.addEventListener("selectend", () => {
+    controller1.userData.isSelecting = false;
+  });
   controller1.addEventListener("connected", function (event) {
     this.add(buildController(event.data));
   });
@@ -267,17 +273,25 @@ function render() {
 
   if (controller1.userData.isSelecting === true) {
     // tempMatrix.identity().extractRotation(controller1.matrixWorld);
-
     // raycaster.ray.origin.setFromMatrixPosition(controller1.matrixWorld);
     // raycaster.ray.direction.set(0, 0, -1).applyMatrix4(tempMatrix);
-
     // const intersects = raycaster.intersectObjects([floor]);
     // console.log(intersects);
-
     // if (intersects.length > 0) {
     //   INTERSECTION = intersects[0].point;
     // }
-    camera.position.x += 0.1;
+    deplacement += 0.0001;
+    const offsetPosition = {
+      x: renderer.xr.getCamera(camera).position.x,
+      y: renderer.xr.getCamera(camera).position.y,
+      z: deplacement,
+      w: 1,
+    };
+    const offsetRotation = new THREE.Quaternion();
+    const transform = new XRRigidTransform(offsetPosition, offsetRotation);
+    const teleportSpaceOffset = baseReferenceSpace.getOffsetReferenceSpace(transform);
+    renderer.xr.setReferenceSpace(teleportSpaceOffset);
+    baseReferenceSpace = teleportSpaceOffset;
   } else if (controller2.userData.isSelecting === true) {
     tempMatrix.identity().extractRotation(controller2.matrixWorld);
 
