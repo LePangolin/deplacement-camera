@@ -285,9 +285,40 @@ let cibleMesh = new THREE.Mesh(
   new THREE.SphereGeometry(0.1, 32, 32),
   new THREE.MeshBasicMaterial({ color: 0xff0000 })
 );
-
 let lastPosition;
 let lastTime = 0;
+
+// Define the radius of the progress bar
+let radius = 5;
+
+// Define the thickness of the progress bar
+let thickness = 0.5;
+
+// Define the progress value as a fraction (0 to 1)
+let progress = 0.75;
+
+// Create a shape for the progress bar
+let shape = new THREE.Shape();
+shape.absarc(0, 0, radius, 0, Math.PI * 2 * progress, false);
+shape.absarc(0, 0, radius - thickness, Math.PI * 2 * progress, 0, true);
+shape.closePath();
+
+// Create an extruded geometry from the shape
+let geometry = new THREE.ExtrudeGeometry(shape, {
+  depth: thickness,
+  bevelEnabled: false,
+});
+
+// Create a material for the progress bar
+let material = new THREE.MeshBasicMaterial({
+  color: 0x00ff00, // Set the color to green
+});
+
+// Create a mesh for the progress bar
+let mesh = new THREE.Mesh(geometry, material);
+
+mesh.scale.set(0.1, 0.1, 0.1);
+mesh.rotation.x = Math.PI / 2;
 function render() {
   INTERSECTION = undefined;
   // line camera
@@ -317,16 +348,50 @@ function render() {
     if (lastPosition) {
       // si le point d'intersection n'est pas trop éloigné du dernier point d'intersection
       if (intersects[0].point.distanceTo(lastPosition) < 1) {
-        if(lastTime == 75){
-            // change color in orange
-            cibleMesh.material.color.set(0xffa500);
-        } else if (lastTime == 150) {
-          // change color in yellow
-          cibleMesh.material.color.set(0xffff00);
-        } else if (lastTime == 200) {
-          // change color in green
-          cibleMesh.material.color.set(0x00ff00);
+        // let red = new THREE.Color(1,0,0);
+        // // red goes to green as time goes on
+        // let green = new THREE.Color(0,1,0);
+        // let color = red.lerp(green, lastTime / 250);
+        // cibleMesh.material.color.set(color);
+        if(mesh){
+          scene.remove(mesh);
         }
+        // Define the radius of the progress bar
+        radius = 5;
+
+        // Define the thickness of the progress bar
+        thickness = 0.5;
+
+        // Define the progress value as a fraction (0 to 1)
+        progress = lastTime / 250;
+
+        // Create a shape for the progress bar
+        shape = new THREE.Shape();
+        shape.absarc(0, 0, radius, 0, Math.PI * 2 * progress, false);
+        shape.absarc(0, 0, radius - thickness, Math.PI * 2 * progress, 0, true);
+        shape.closePath();
+
+        // Create an extruded geometry from the shape
+        geometry = new THREE.ExtrudeGeometry(shape, {
+          depth: thickness,
+          bevelEnabled: false,
+        });
+      
+
+        // Create a material for the progress bar
+        material = new THREE.MeshBasicMaterial({
+          color: new THREE.Color(1,1,1), 
+        });
+
+        // Create a mesh for the progress bar
+        mesh = new THREE.Mesh(geometry, material);
+
+        mesh.scale.set(0.1, 0.1, 0.1);
+        mesh.rotation.x = Math.PI / 2;
+        mesh.position.y = -1;
+        mesh.position.copy(intersects[0].point);
+        scene.add(mesh);
+
         if (lastTime == 250) {
           const offsetPosition = {
             x: -intersects[0].point.x,
@@ -366,7 +431,7 @@ function render() {
       intersesctionPoint.y,
       intersesctionPoint.z
     );
-    scene.add(cibleMesh);
+    // scene.add(cibleMesh);
   } else {
     lastTime = 0;
     scene.remove(cibleMesh);
