@@ -388,8 +388,8 @@ function render() {
 
         mesh.scale.set(0.1, 0.1, 0.1);
         mesh.rotation.x = Math.PI / 2;
-        mesh.position.y = -1;
         mesh.position.copy(intersects[0].point);
+        mesh.position.y = -0.3; 
         scene.add(mesh);
 
         if (lastTime == 250) {
