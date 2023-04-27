@@ -66,7 +66,7 @@ function init() {
     });
     object.scene.scale.set(0.5, 0.5, 0.5);
     object.scene.position.x = 1;
-    object.scene.position.y = -0.5;
+    object.scene.position.y = 0.5;
     scene.add(object.scene);
   });
 
@@ -76,7 +76,7 @@ function init() {
     new THREE.BoxGeometry(1, 0.1, 1),
     new THREE.MeshBasicMaterial({ color: 0x00ff00 })
   );
-  cubedeplacement.position.set(3, 0, 0);
+  cubedeplacement.position.set(3, 0.5, 0);
   scene.add(cubedeplacement);
 
 
@@ -417,7 +417,7 @@ function render() {
         mesh.scale.set(0.1, 0.1, 0.1);
         mesh.rotation.x = Math.PI / 2;
         mesh.position.copy(intersects[0].point);
-        mesh.position.y = -0.3; 
+        mesh.position.y = 0.7; 
         scene.add(mesh);
 
         if (lastTime == 250) {
@@ -451,8 +451,8 @@ function render() {
       lastPosition = intersects[0].point;
     }
     let intersesctionPoint = intersects[0].point;
-    if (cibleMesh) {
-      scene.remove(cibleMesh);
+    if (!mesh) {
+      scene.remove(mesh);
     }
     cibleMesh.position.set(
       intersesctionPoint.x,
@@ -462,7 +462,7 @@ function render() {
     // scene.add(cibleMesh);
   } else {
     lastTime = 0;
-    scene.remove(cibleMesh);
+    scene.remove(mesh);
     scene.remove(line);
   }
 
