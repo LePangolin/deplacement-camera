@@ -102,6 +102,8 @@ function init() {
   createDeplacementCube(-2, 0.455, 4);
   createDeplacementCube(3.9, 0.455, 4);
   createDeplacementCube(1, 0.455, 4);
+  createDeplacementCube(-2, 0.455, 4);
+
 
   const light = new THREE.DirectionalLight(0xffffff);
   light.position.set(2, 2, 2)
