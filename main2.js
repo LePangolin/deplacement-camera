@@ -72,15 +72,34 @@ function init() {
 
   scene.add(new THREE.HemisphereLight(0x606060, 0x404040));
 
-  let cubedeplacement = new THREE.Mesh(
-    new THREE.BoxGeometry(1, 0.1, 1),
-    new THREE.MeshBasicMaterial({ color: 0x00ff00 })
-  );
-  cubedeplacement.position.set(3, 0.5, 0);
-  scene.add(cubedeplacement);
+  let cubeTexture = new THREE.TextureLoader().load("./img/1426.png");
+  // let cubedeplacement = new THREE.Mesh(
+  //   new THREE.BoxGeometry(1, 0.1, 1),
+  //   new THREE.MeshBasicMaterial({ map: cubeTexture })
+  // );
 
+  // cubedeplacementTexture is a png only on the top face
 
-  moveingSpace.push(cubedeplacement);
+  function createDeplacementCube(x, y, z) {
+    let cubedeplacementTexture = new THREE.TextureLoader().load(
+      "./img/1426.png"
+    );
+    let cubedeplacement = new THREE.Mesh(
+      new THREE.BoxGeometry(1, 0.1, 1),
+      new THREE.MeshBasicMaterial({ map: cubedeplacementTexture })
+    );
+    cubedeplacement.position.set(x, y, z);
+    cubedeplacement.rotation.y = -1.57;
+    cubedeplacement.scale.set(0.5, 1, 0.5);
+    scene.add(cubedeplacement);
+    moveingSpace.push(cubedeplacement);
+  }
+
+  createDeplacementCube(3.9, 0.455, 0);
+  createDeplacementCube(1, 0.455, 0);
+  createDeplacementCube(-2, 0.455, 0);
+  createDeplacementCube(-2, 0.455, 4);
+  createDeplacementCube(3.9, 0.455, 4);
 
   const light = new THREE.DirectionalLight(0xffffff);
   light.position.set(1, 1, 1).normalize();
@@ -381,7 +400,7 @@ function render() {
         // let green = new THREE.Color(0,1,0);
         // let color = red.lerp(green, lastTime / 250);
         // cibleMesh.material.color.set(color);
-        if(mesh){
+        if (mesh) {
           scene.remove(mesh);
         }
         // Define the radius of the progress bar
@@ -404,11 +423,11 @@ function render() {
           depth: thickness,
           bevelEnabled: false,
         });
-      
+        // color bleu marine
 
         // Create a material for the progress bar
         material = new THREE.MeshBasicMaterial({
-          color: new THREE.Color(1,1,1), 
+          color: new THREE.Color("rgb(3,34,76)"),
         });
 
         // Create a mesh for the progress bar
@@ -417,7 +436,7 @@ function render() {
         mesh.scale.set(0.1, 0.1, 0.1);
         mesh.rotation.x = Math.PI / 2;
         mesh.position.copy(intersects[0].point);
-        mesh.position.y = 0.7; 
+        mesh.position.y = 0.7;
         scene.add(mesh);
 
         if (lastTime == 250) {
