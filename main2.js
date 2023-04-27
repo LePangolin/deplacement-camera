@@ -57,20 +57,21 @@ function init() {
   // scene.add( room );
 
   let glbLoader = new GLTFLoader();
-  glbLoader.load("./sources/test_collisions.glb", function (object) {
+  glbLoader.load("./sources/musee.glb", function (object) {
     object.scene.traverse(function (child) {
       if (child.isMesh) {
-        child.castShadow = true;
-        child.receiveShadow = true;
+        // emit light
+        child.material.emissive = new THREE.Color(0x444444);
       }
     });
+
     object.scene.scale.set(0.5, 0.5, 0.5);
     object.scene.position.x = 1;
     object.scene.position.y = 0.5;
     scene.add(object.scene);
   });
 
-  scene.add(new THREE.HemisphereLight(0x606060, 0x404040));
+  // scene.add(new THREE.HemisphereLight(0x606060, 0x404040));
 
   let cubeTexture = new THREE.TextureLoader().load("./img/1426.png");
   // let cubedeplacement = new THREE.Mesh(
@@ -90,7 +91,7 @@ function init() {
     );
     cubedeplacement.position.set(x, y, z);
     cubedeplacement.rotation.y = -1.57;
-    cubedeplacement.scale.set(0.5, 1, 0.5);
+    cubedeplacement.scale.set(0.6, 1, 0.6);
     scene.add(cubedeplacement);
     moveingSpace.push(cubedeplacement);
   }
@@ -100,68 +101,28 @@ function init() {
   createDeplacementCube(-2, 0.455, 0);
   createDeplacementCube(-2, 0.455, 4);
   createDeplacementCube(3.9, 0.455, 4);
+  createDeplacementCube(1, 0.455, 4);
 
   const light = new THREE.DirectionalLight(0xffffff);
-  light.position.set(1, 1, 1).normalize();
+  light.position.set(2, 2, 2)
+  light.scale.set(10, 10, 10);
   scene.add(light);
 
-  const ambientLight = new THREE.AmbientLight(0xffffff, 1);
+  const pointLight = new THREE.PointLight(0xffffff);
+  pointLight.position.set(5, 5, 5);
+  
+  scene.add(pointLight);
+  
+  // reduce the amount of light in the scene
+  
+  
+  const ambientLight = new THREE.AmbientLight(0xffffff);
   scene.add(ambientLight);
-
   marker = new THREE.Mesh(
     new THREE.CircleGeometry(0.25, 32).rotateX(-Math.PI / 2),
     new THREE.MeshBasicMaterial({ color: 0x808080 })
   );
   scene.add(marker);
-
-  // floor = new THREE.Mesh(
-  // 	new THREE.PlaneGeometry( 4.8, 4.8, 2, 2 ).rotateX( - Math.PI / 2 ),
-  // 	new THREE.MeshBasicMaterial( { color: 0x808080, transparent: true, opacity: 0.25 } )
-  // );
-  // scene.add( floor );
-
-  // let floorTexture = new THREE.TextureLoader().load(
-  //   "./img/depositphotos_10589691-stock-photo-ground-background.jpg"
-  // );
-  // floorTexture.wrapS = floorTexture.wrapT = THREE.RepeatWrapping;
-  // floorTexture.repeat.set(10, 10);
-  // let floorMaterial = new THREE.MeshBasicMaterial({
-  //   map: floorTexture,
-  //   side: THREE.DoubleSide,
-  // });
-  // let floorGeometry = new THREE.PlaneGeometry(100, 100, 10, 10);
-  // floor = new THREE.Mesh(floorGeometry, floorMaterial);
-  // floor.position.y = -0.5;
-  // floor.rotation.x = Math.PI / 2;
-  // scene.add(floor);
-
-  // let loader = new FBXLoader();
-  // loader.load("./sources/oak 01.fbx", function (object) {
-  //   object.traverse(function (child) {
-  //     if (child.isMesh) {
-  //       child.castShadow = true;
-  //       child.receiveShadow = true;
-  //     }
-  //   });
-  //   // reduce the size of the model
-  //   object.scale.set(0.1, 0.1, 0.1);
-  //   object.position.y = -0.5;
-  //   scene.add(object);
-  // });
-
-  // let loader2 = new GLTFLoader();
-  // loader2.load("./sources/voiture.glb", function (object) {
-  //   object.scene.traverse(function (child) {
-  //     if (child.isMesh) {
-  //       child.castShadow = true;
-  //       child.receiveShadow = true;
-  //     }
-  //   });
-  //   object.scene.scale.set(0.5, 0.5, 0.5);
-  //   object.scene.position.x = 1;
-  //   object.scene.position.y = -0.5;
-  //   scene.add(object.scene);
-  // });
 
   raycaster = new THREE.Raycaster();
 
