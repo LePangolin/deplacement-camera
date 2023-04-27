@@ -15,6 +15,7 @@ let axis1, axis2;
 let marker, floor, baseReferenceSpace;
 
 let INTERSECTION;
+let moveingSpace = [];
 const tempMatrix = new THREE.Matrix4();
 
 init();
@@ -55,11 +56,38 @@ function init() {
   // );
   // scene.add( room );
 
+  let glbLoader = new GLTFLoader();
+  glbLoader.load("./sources/test_collisions.glb", function (object) {
+    object.scene.traverse(function (child) {
+      if (child.isMesh) {
+        child.castShadow = true;
+        child.receiveShadow = true;
+      }
+    });
+    object.scene.scale.set(0.5, 0.5, 0.5);
+    object.scene.position.x = 1;
+    object.scene.position.y = -0.5;
+    scene.add(object.scene);
+  });
+
   scene.add(new THREE.HemisphereLight(0x606060, 0x404040));
+
+  let cubedeplacement = new THREE.Mesh(
+    new THREE.BoxGeometry(1, 0.1, 1),
+    new THREE.MeshBasicMaterial({ color: 0x00ff00 })
+  );
+  cubedeplacement.position.set(3, 0, 0);
+  scene.add(cubedeplacement);
+
+
+  moveingSpace.push(cubedeplacement);
 
   const light = new THREE.DirectionalLight(0xffffff);
   light.position.set(1, 1, 1).normalize();
   scene.add(light);
+
+  const ambientLight = new THREE.AmbientLight(0xffffff, 1);
+  scene.add(ambientLight);
 
   marker = new THREE.Mesh(
     new THREE.CircleGeometry(0.25, 32).rotateX(-Math.PI / 2),
@@ -73,48 +101,48 @@ function init() {
   // );
   // scene.add( floor );
 
-  let floorTexture = new THREE.TextureLoader().load(
-    "./img/depositphotos_10589691-stock-photo-ground-background.jpg"
-  );
-  floorTexture.wrapS = floorTexture.wrapT = THREE.RepeatWrapping;
-  floorTexture.repeat.set(10, 10);
-  let floorMaterial = new THREE.MeshBasicMaterial({
-    map: floorTexture,
-    side: THREE.DoubleSide,
-  });
-  let floorGeometry = new THREE.PlaneGeometry(100, 100, 10, 10);
-  floor = new THREE.Mesh(floorGeometry, floorMaterial);
-  floor.position.y = -0.5;
-  floor.rotation.x = Math.PI / 2;
-  scene.add(floor);
+  // let floorTexture = new THREE.TextureLoader().load(
+  //   "./img/depositphotos_10589691-stock-photo-ground-background.jpg"
+  // );
+  // floorTexture.wrapS = floorTexture.wrapT = THREE.RepeatWrapping;
+  // floorTexture.repeat.set(10, 10);
+  // let floorMaterial = new THREE.MeshBasicMaterial({
+  //   map: floorTexture,
+  //   side: THREE.DoubleSide,
+  // });
+  // let floorGeometry = new THREE.PlaneGeometry(100, 100, 10, 10);
+  // floor = new THREE.Mesh(floorGeometry, floorMaterial);
+  // floor.position.y = -0.5;
+  // floor.rotation.x = Math.PI / 2;
+  // scene.add(floor);
 
-  let loader = new FBXLoader();
-  loader.load("./sources/oak 01.fbx", function (object) {
-    object.traverse(function (child) {
-      if (child.isMesh) {
-        child.castShadow = true;
-        child.receiveShadow = true;
-      }
-    });
-    // reduce the size of the model
-    object.scale.set(0.1, 0.1, 0.1);
-    object.position.y = -0.5;
-    scene.add(object);
-  });
+  // let loader = new FBXLoader();
+  // loader.load("./sources/oak 01.fbx", function (object) {
+  //   object.traverse(function (child) {
+  //     if (child.isMesh) {
+  //       child.castShadow = true;
+  //       child.receiveShadow = true;
+  //     }
+  //   });
+  //   // reduce the size of the model
+  //   object.scale.set(0.1, 0.1, 0.1);
+  //   object.position.y = -0.5;
+  //   scene.add(object);
+  // });
 
-  let loader2 = new GLTFLoader();
-  loader2.load("./sources/voiture.glb", function (object) {
-    object.scene.traverse(function (child) {
-      if (child.isMesh) {
-        child.castShadow = true;
-        child.receiveShadow = true;
-      }
-    });
-    object.scene.scale.set(0.5, 0.5, 0.5);
-    object.scene.position.x = 1;
-    object.scene.position.y = -0.5;
-    scene.add(object.scene);
-  });
+  // let loader2 = new GLTFLoader();
+  // loader2.load("./sources/voiture.glb", function (object) {
+  //   object.scene.traverse(function (child) {
+  //     if (child.isMesh) {
+  //       child.castShadow = true;
+  //       child.receiveShadow = true;
+  //     }
+  //   });
+  //   object.scene.scale.set(0.5, 0.5, 0.5);
+  //   object.scene.position.x = 1;
+  //   object.scene.position.y = -0.5;
+  //   scene.add(object.scene);
+  // });
 
   raycaster = new THREE.Raycaster();
 
@@ -343,7 +371,7 @@ function render() {
     renderer.xr.getCamera(camera).matrixWorld
   );
   raycaster.ray.direction.set(0, 0, -1).applyMatrix4(tempMatrix);
-  const intersects = raycaster.intersectObjects([floor]);
+  const intersects = raycaster.intersectObjects(moveingSpace, true);
   if (intersects.length > 0) {
     if (lastPosition) {
       // si le point d'intersection n'est pas trop éloigné du dernier point d'intersection
@@ -444,7 +472,7 @@ function render() {
     raycaster.ray.origin.setFromMatrixPosition(controller1.matrixWorld);
     raycaster.ray.direction.set(0, 0, -1).applyMatrix4(tempMatrix);
 
-    const intersects = raycaster.intersectObjects([floor]);
+    const intersects = raycaster.intersectObjects(moveingSpace, true);
 
     if (intersects.length > 0) {
       INTERSECTION = intersects[0].point;
@@ -455,7 +483,7 @@ function render() {
     raycaster.ray.origin.setFromMatrixPosition(controller2.matrixWorld);
     raycaster.ray.direction.set(0, 0, -1).applyMatrix4(tempMatrix);
 
-    const intersects = raycaster.intersectObjects([floor]);
+    const intersects = raycaster.intersectObjects(moveingSpace, true);
 
     if (intersects.length > 0) {
       INTERSECTION = intersects[0].point;
