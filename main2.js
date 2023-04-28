@@ -356,18 +356,18 @@ function render() {
     renderer.xr.getCamera(camera).position.z
   );
   meshhold.rotation.set(
-    renderer.xr.getCamera(camera).rotation.x,
-    renderer.xr.getCamera(camera).rotation.y,
-    renderer.xr.getCamera(camera).rotation.z
+    camera.rotation.x,
+    camera.rotation.y,
+    camera.rotation.z
   );
   meshdebug.position.set(
     meshhold.position.x + 0.4,
     meshhold.position.y,
     meshhold.position.z
   );
-  meshdebug.rotation.z = meshhold.rotation.z;
-  meshdebug.rotation.y = meshhold.rotation.y;
-  meshdebug.rotation.x = meshhold.rotation.x;
+  // meshdebug.rotation.z = meshhold.rotation.z;
+  // meshdebug.rotation.y = meshhold.rotation.y;
+  // meshdebug.rotation.x = meshhold.rotation.x;
 
   meshhold.add(meshdebug);
   scene.add(meshdebug)
