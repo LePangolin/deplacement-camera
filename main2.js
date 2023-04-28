@@ -96,20 +96,20 @@ function init() {
   // );
   // scene.add( room );
 
-  // let glbLoader = new GLTFLoader();
-  // glbLoader.load("./sources/musee.glb", function (object) {
-  //   object.scene.traverse(function (child) {
-  //     if (child.isMesh) {
-  //       // emit light
-  //       child.material.emissive = new THREE.Color(0x444444);
-  //     }
-  //   });
+  let glbLoader = new GLTFLoader();
+  glbLoader.load("./sources/musee.glb", function (object) {
+    object.scene.traverse(function (child) {
+      if (child.isMesh) {
+        // emit light
+        child.material.emissive = new THREE.Color(0x444444);
+      }
+    });
 
-  //   object.scene.scale.set(0.5, 0.5, 0.5);
-  //   object.scene.position.x = 1;
-  //   object.scene.position.y = 0.5;
-  //   scene.add(object.scene);
-  // });
+    object.scene.scale.set(0.5, 0.5, 0.5);
+    object.scene.position.x = 1;
+    object.scene.position.y = 0.5;
+    scene.add(object.scene);
+  });
 
   // scene.add(new THREE.HemisphereLight(0x606060, 0x404040));
 
