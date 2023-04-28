@@ -385,6 +385,9 @@ function render() {
     renderer.xr.getCamera(camera).position.y,
     renderer.xr.getCamera(camera).position.z
   );
+  viseurCube.rotation.y = renderer.xr.getCamera(camera).rotation.y;
+  viseurCube.rotation.x = renderer.xr.getCamera(camera).rotation.x;
+  viseurCube.rotation.z = renderer.xr.getCamera(camera).rotation.z;
 
   if(positioncube.x != viseurCube.position.x || positioncube.y != viseurCube.position.y || positioncube.z != viseurCube.position.z){
     console.log("position changée");
