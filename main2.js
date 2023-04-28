@@ -17,9 +17,46 @@ let marker, floor, baseReferenceSpace;
 let INTERSECTION;
 let moveingSpace = [];
 const tempMatrix = new THREE.Matrix4();
-let hitmarkerCube = new THREE.BoxGeometry(0.1, 0.1, 0.1);
-let hitmarkerMaterial = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
-let hitmarker = new THREE.Mesh(hitmarkerCube, hitmarkerMaterial);
+
+  // Create a circle shape
+  const circleGeometry = new THREE.CircleGeometry(0.1, 16);
+
+  // Create a white material for the circle
+  const circleMaterial = new THREE.MeshBasicMaterial({
+    color: 0xffffff,
+    transparent: true,
+    opacity: 0.5,
+  });
+
+  // Create a red material for the cross
+  const crossMaterial = new THREE.LineBasicMaterial({
+    color: 0xff0000,
+    linewidth: 2,
+  });
+
+  // Create the hitmarker group
+  const hitmarker = new THREE.Group();
+
+  // Add the circle to the hitmarker group
+  const circle = new THREE.Mesh(circleGeometry, circleMaterial);
+  hitmarker.add(circle);
+
+  // Create the cross shape
+  const crossGeometry = new THREE.ShapeGeometry(
+    new THREE.Shape([
+      new THREE.Vector2(-0.05, -0.05),
+      new THREE.Vector2(-0.05, 0.05),
+      new THREE.Vector2(0.05, 0.05),
+      new THREE.Vector2(0.05, -0.05),
+      new THREE.Vector2(-0.05, -0.05),
+    ])
+  );
+
+
+
+  // Create the cross object and add it to the hitmarker group
+  const cross = new THREE.Line(crossGeometry, crossMaterial);
+  hitmarker.add(cross);
 
 init();
 animate();
@@ -59,20 +96,20 @@ function init() {
   // );
   // scene.add( room );
 
-  let glbLoader = new GLTFLoader();
-  glbLoader.load("./sources/musee.glb", function (object) {
-    object.scene.traverse(function (child) {
-      if (child.isMesh) {
-        // emit light
-        child.material.emissive = new THREE.Color(0x444444);
-      }
-    });
+  // let glbLoader = new GLTFLoader();
+  // glbLoader.load("./sources/musee.glb", function (object) {
+  //   object.scene.traverse(function (child) {
+  //     if (child.isMesh) {
+  //       // emit light
+  //       child.material.emissive = new THREE.Color(0x444444);
+  //     }
+  //   });
 
-    object.scene.scale.set(0.5, 0.5, 0.5);
-    object.scene.position.x = 1;
-    object.scene.position.y = 0.5;
-    scene.add(object.scene);
-  });
+  //   object.scene.scale.set(0.5, 0.5, 0.5);
+  //   object.scene.position.x = 1;
+  //   object.scene.position.y = 0.5;
+  //   scene.add(object.scene);
+  // });
 
   // scene.add(new THREE.HemisphereLight(0x606060, 0x404040));
 
@@ -107,16 +144,13 @@ function init() {
   createDeplacementCube(1, 0.455, 4);
   createDeplacementCube(-2, 0.455, -4);
 
-
   const light = new THREE.DirectionalLight(0xffffff);
-  light.position.set(2, 2, 2)
+  light.position.set(2, 2, 2);
   light.scale.set(10, 10, 10);
   scene.add(light);
 
-  
   // reduce the amount of light in the scene
-  
-  
+
   const ambientLight = new THREE.AmbientLight(0xffffff);
   scene.add(ambientLight);
   marker = new THREE.Mesh(
@@ -124,8 +158,6 @@ function init() {
     new THREE.MeshBasicMaterial({ color: 0x808080 })
   );
   scene.add(marker);
-
-
 
   raycaster = new THREE.Raycaster();
 
@@ -139,6 +171,10 @@ function init() {
     baseReferenceSpace = renderer.xr.getReferenceSpace();
   });
   renderer.xr.enabled = true;
+
+  console.log(renderer.xr.getCamera(camera).position);
+
+
 
   document.body.appendChild(renderer.domElement);
   document.body.appendChild(VRButton.createButton(renderer));
@@ -221,7 +257,6 @@ function init() {
 }
 
 // hitmarker mesh
-
 
 function buildController(data) {
   let geometry, material;
@@ -333,16 +368,11 @@ let mesh = new THREE.Mesh(geometry, material);
 mesh.scale.set(0.1, 0.1, 0.1);
 mesh.rotation.x = Math.PI / 2;
 function render() {
-  INTERSECTION = undefined;
-  if(hitmarker){
-    scene.remove(hitmarker);  
-    hitmarker = new THREE.Mesh(hitmarkerCube, hitmarkerMaterial);
-    hitmarker.position.copy(renderer.xr.getCamera(camera).position);
-    hitmarker.rotation.copy(renderer.xr.getCamera(camera).rotation);
-    hitmarker.position.x += 0.1;
-    console.log(hitmarker.position);
-    scene.add(hitmarker);
-  }
+  // console.log(renderer.xr.getCamera(camera).position);
+  // hitmarker.position.copy(renderer.xr.getCamera(camera).position);
+  // // Add the hitmarker to the scene
+  // scene.add(hitmarker);
+  // INTERSECTION = undefined;
 
   // line camera
   if (line) {
