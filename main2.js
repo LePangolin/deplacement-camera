@@ -18,6 +18,14 @@ let INTERSECTION;
 let moveingSpace = [];
 const tempMatrix = new THREE.Matrix4();
 
+
+init();
+animate();
+
+function init() {
+  scene = new THREE.Scene();
+  scene.background = new THREE.Color(0x505050);
+
   // Create a circle shape
   const circleGeometry = new THREE.CircleGeometry(0.1, 16);
 
@@ -58,12 +66,6 @@ const tempMatrix = new THREE.Matrix4();
   const cross = new THREE.Line(crossGeometry, crossMaterial);
   hitmarker.add(cross);
 
-init();
-animate();
-
-function init() {
-  scene = new THREE.Scene();
-  scene.background = new THREE.Color(0x505050);
 
   camera = new THREE.PerspectiveCamera(
     50,
@@ -367,12 +369,42 @@ let mesh = new THREE.Mesh(geometry, material);
 
 mesh.scale.set(0.1, 0.1, 0.1);
 mesh.rotation.x = Math.PI / 2;
+
+let viseurCube = new THREE.Mesh(
+  new THREE.BoxGeometry(0.01, 0.01, 0.01),
+  new THREE.MeshBasicMaterial({ color: 0x00ff00 })
+);
+
+let positioncube = new THREE.Vector3();
+
 function render() {
-  // console.log(renderer.xr.getCamera(camera).position);
-  // hitmarker.position.copy(renderer.xr.getCamera(camera).position);
-  // // Add the hitmarker to the scene
-  // scene.add(hitmarker);
-  // INTERSECTION = undefined;
+  INTERSECTION = undefined;
+
+  viseurCube.position.set(
+    renderer.xr.getCamera(camera).position.x + 0.4,
+    renderer.xr.getCamera(camera).position.y,
+    renderer.xr.getCamera(camera).position.z
+  );
+
+  if(positioncube.x != viseurCube.position.x || positioncube.y != viseurCube.position.y || positioncube.z != viseurCube.position.z){
+    console.log("position changée");
+    console.log(viseurCube.position);
+    console.log(renderer.xr.getCamera(camera).position);
+    positioncube.x = viseurCube.position.x;
+    positioncube.y = viseurCube.position.y;
+    positioncube.z = viseurCube.position.z;
+    let positioncubehelper = new THREE.Vector3();
+    positioncubehelper.copy(positioncube);
+    positioncubehelper.applyMatrix4(renderer.xr.getCamera(camera).matrixWorld);
+    console.log(positioncubehelper);
+  }
+
+  if(positioncube.distanceTo(viseurCube.position) < 0.5)
+  {
+    console.log("distance ok");
+  }
+
+  scene.add(viseurCube);
 
   // line camera
   if (line) {
