@@ -17,6 +17,9 @@ let marker, floor, baseReferenceSpace;
 let INTERSECTION;
 let moveingSpace = [];
 const tempMatrix = new THREE.Matrix4();
+let hitmarkerCube = new THREE.BoxGeometry(0.1, 0.1, 0.1);
+let hitmarkerMaterial = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+let hitmarker = new THREE.Mesh(hitmarkerCube, hitmarkerMaterial);
 
 init();
 animate();
@@ -110,10 +113,6 @@ function init() {
   light.scale.set(10, 10, 10);
   scene.add(light);
 
-  const pointLight = new THREE.PointLight(0xffffff);
-  pointLight.position.set(5, 5, 5);
-  
-  scene.add(pointLight);
   
   // reduce the amount of light in the scene
   
@@ -125,6 +124,8 @@ function init() {
     new THREE.MeshBasicMaterial({ color: 0x808080 })
   );
   scene.add(marker);
+
+
 
   raycaster = new THREE.Raycaster();
 
@@ -216,9 +217,11 @@ function init() {
   scene.add(controllerGrip2);
 
   //
-
   window.addEventListener("resize", onWindowResize, false);
 }
+
+// hitmarker mesh
+
 
 function buildController(data) {
   let geometry, material;
@@ -331,6 +334,16 @@ mesh.scale.set(0.1, 0.1, 0.1);
 mesh.rotation.x = Math.PI / 2;
 function render() {
   INTERSECTION = undefined;
+  if(hitmarker){
+    scene.remove(hitmarker);  
+    hitmarker = new THREE.Mesh(hitmarkerCube, hitmarkerMaterial);
+    hitmarker.position.copy(renderer.xr.getCamera(camera).position);
+    hitmarker.rotation.copy(renderer.xr.getCamera(camera).rotation);
+    hitmarker.position.x += 0.1;
+    console.log(hitmarker.position);
+    scene.add(hitmarker);
+  }
+
   // line camera
   if (line) {
     scene.remove(line);
