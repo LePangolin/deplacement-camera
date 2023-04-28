@@ -18,36 +18,12 @@ let INTERSECTION;
 let moveingSpace = [];
 const tempMatrix = new THREE.Matrix4();
 
-
 init();
 animate();
 
 function init() {
   scene = new THREE.Scene();
   scene.background = new THREE.Color(0x505050);
-
-  // Create a circle shape
-  const circleGeometry = new THREE.CircleGeometry(0.1, 16);
-
-  // Create a white material for the circle
-  const circleMaterial = new THREE.MeshBasicMaterial({
-    color: 0xffffff,
-    transparent: true,
-    opacity: 0.5,
-  });
-
-  // Create a red material for the cross
-  const crossMaterial = new THREE.LineBasicMaterial({
-    color: 0xff0000,
-    linewidth: 2,
-  });
-
-  // Create the hitmarker group
-  const hitmarker = new THREE.Group();
-
-  // Add the circle to the hitmarker group
-  const circle = new THREE.Mesh(circleGeometry, circleMaterial);
-  hitmarker.add(circle);
 
   // Create the cross shape
   const crossGeometry = new THREE.ShapeGeometry(
@@ -59,13 +35,6 @@ function init() {
       new THREE.Vector2(-0.05, -0.05),
     ])
   );
-
-
-
-  // Create the cross object and add it to the hitmarker group
-  const cross = new THREE.Line(crossGeometry, crossMaterial);
-  hitmarker.add(cross);
-
 
   camera = new THREE.PerspectiveCamera(
     50,
@@ -99,19 +68,19 @@ function init() {
   // scene.add( room );
 
   let glbLoader = new GLTFLoader();
-  glbLoader.load("./sources/musee.glb", function (object) {
-    object.scene.traverse(function (child) {
-      if (child.isMesh) {
-        // emit light
-        child.material.emissive = new THREE.Color(0x444444);
-      }
-    });
+  // glbLoader.load("./sources/musee.glb", function (object) {
+  //   object.scene.traverse(function (child) {
+  //     if (child.isMesh) {
+  //       // emit light
+  //       child.material.emissive = new THREE.Color(0x444444);
+  //     }
+  //   });
 
-    object.scene.scale.set(0.5, 0.5, 0.5);
-    object.scene.position.x = 1;
-    object.scene.position.y = 0.5;
-    scene.add(object.scene);
-  });
+  //   object.scene.scale.set(0.5, 0.5, 0.5);
+  //   object.scene.position.x = 1;
+  //   object.scene.position.y = 0.5;
+  //   scene.add(object.scene);
+  // });
 
   // scene.add(new THREE.HemisphereLight(0x606060, 0x404040));
 
@@ -175,8 +144,6 @@ function init() {
   renderer.xr.enabled = true;
 
   console.log(renderer.xr.getCamera(camera).position);
-
-
 
   document.body.appendChild(renderer.domElement);
   document.body.appendChild(VRButton.createButton(renderer));
@@ -257,8 +224,6 @@ function init() {
   //
   window.addEventListener("resize", onWindowResize, false);
 }
-
-// hitmarker mesh
 
 function buildController(data) {
   let geometry, material;
@@ -370,44 +335,40 @@ let mesh = new THREE.Mesh(geometry, material);
 mesh.scale.set(0.1, 0.1, 0.1);
 mesh.rotation.x = Math.PI / 2;
 
-let viseurCube = new THREE.Mesh(
-  new THREE.BoxGeometry(0.01, 0.01, 0.01),
+let cubeViseur = new THREE.Mesh(
+  new THREE.BoxGeometry(0.1, 0.1, 0.1),
   new THREE.MeshBasicMaterial({ color: 0x00ff00 })
 );
 
-let positioncube = new THREE.Vector3();
+let meshdebug = new THREE.Mesh(
+  new THREE.SphereGeometry(0.1, 32, 32),
+  new THREE.MeshBasicMaterial({ color: 0xff0000 })
+);
 
+let meshhold = new THREE.Object3D();
 function render() {
   INTERSECTION = undefined;
 
-  viseurCube.position.set(
-    renderer.xr.getCamera(camera).position.x + 0.4,
+
+  meshhold.position.set(
+    renderer.xr.getCamera(camera).position.x,
     renderer.xr.getCamera(camera).position.y,
     renderer.xr.getCamera(camera).position.z
   );
-  viseurCube.rotation.y = renderer.xr.getCamera(camera).rotation.y;
-  viseurCube.rotation.x = renderer.xr.getCamera(camera).rotation.x;
-  viseurCube.rotation.z = renderer.xr.getCamera(camera).rotation.z;
+  meshhold.rotation.set(
+    renderer.xr.getCamera(camera).rotation.x,
+    renderer.xr.getCamera(camera).rotation.y,
+    renderer.xr.getCamera(camera).rotation.z
+  );
+  meshdebug.position.set(
+    meshhold.position.x + 0.4,
+    0,
+    meshhold.position.z
+  );
+  meshhold.add(meshdebug);
+  scene.add(meshdebug)
+  scene.add(meshhold);
 
-  if(positioncube.x != viseurCube.position.x || positioncube.y != viseurCube.position.y || positioncube.z != viseurCube.position.z){
-    console.log("position changée");
-    console.log(viseurCube.position);
-    console.log(renderer.xr.getCamera(camera).position);
-    positioncube.x = viseurCube.position.x;
-    positioncube.y = viseurCube.position.y;
-    positioncube.z = viseurCube.position.z;
-    let positioncubehelper = new THREE.Vector3();
-    positioncubehelper.copy(positioncube);
-    positioncubehelper.applyMatrix4(renderer.xr.getCamera(camera).matrixWorld);
-    console.log(positioncubehelper);
-  }
-
-  if(positioncube.distanceTo(viseurCube.position) < 0.5)
-  {
-    console.log("distance ok");
-  }
-
-  scene.add(viseurCube);
 
   // line camera
   if (line) {
@@ -514,16 +475,25 @@ function render() {
     if (!mesh) {
       scene.remove(mesh);
     }
-    cibleMesh.position.set(
-      intersesctionPoint.x,
-      intersesctionPoint.y,
-      intersesctionPoint.z
-    );
+    // cibleMesh.position.set(
+    //   intersesctionPoint.x,
+    //   intersesctionPoint.y,
+    //   intersesctionPoint.z
+    // );
     // scene.add(cibleMesh);
   } else {
     lastTime = 0;
     scene.remove(mesh);
-    scene.remove(line);
+    // scene.remove(line);
+    cubeViseur.position.set(
+      renderer.xr.getCamera(camera).position.x,
+      renderer.xr.getCamera(camera).position.y,
+      renderer.xr.getCamera(camera).position.z
+    );
+    cubeViseur.rotation.y = renderer.xr.getCamera(camera).rotation.y;
+    cubeViseur.rotation.x = renderer.xr.getCamera(camera).rotation.x;
+    cubeViseur.rotation.z = renderer.xr.getCamera(camera).rotation.z;
+    scene.add(cubeViseur);
   }
 
   if (controller1.userData.isSelecting === true) {
@@ -553,6 +523,9 @@ function render() {
   if (INTERSECTION) marker.position.copy(INTERSECTION);
 
   marker.visible = INTERSECTION !== undefined;
+  // add cubeViseur for it is always at center of the screen even when moving
+  renderer.xr.getCamera(camera).add(cubeViseur);
+  cubeViseur.position.set(0, 0, -0.5);
 
   renderer.render(scene, camera);
 }
