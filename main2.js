@@ -362,7 +362,7 @@ function render() {
   );
   meshdebug.position.set(
     meshhold.position.x + 0.4,
-    0,
+    meshhold.position.y,
     meshhold.position.z
   );
   meshhold.add(meshdebug);
