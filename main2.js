@@ -365,6 +365,10 @@ function render() {
     meshhold.position.y,
     meshhold.position.z
   );
+  meshdebug.rotation.z = meshhold.rotation.z;
+  meshdebug.rotation.y = meshhold.rotation.y;
+  meshdebug.rotation.x = meshhold.rotation.x;
+
   meshhold.add(meshdebug);
   scene.add(meshdebug)
   scene.add(meshhold);
