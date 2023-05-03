@@ -170,7 +170,7 @@ function init() {
   });
   controller1.addEventListener("connected", function (event) {
     controller1.gamepad = event.data.gamepad;
-    axis1 = controller1.gamepad.axes[1];
+
   });
   controller1.addEventListener("disconnected", function () {
     this.remove(this.children[0]);
