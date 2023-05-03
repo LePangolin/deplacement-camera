@@ -1,18 +1,13 @@
 import * as THREE from "three";
 
-import { BoxLineGeometry } from "three/addons/geometries/BoxLineGeometry.js";
 import { VRButton } from "three/addons/webxr/VRButton.js";
 import { XRControllerModelFactory } from "three/addons/webxr/XRControllerModelFactory.js";
-import { FBXLoader } from "three/examples/jsm/loaders/FBXLoader.js";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 
 let camera, scene, raycaster, renderer;
 let controller1, controller2;
 let controllerGrip1, controllerGrip2;
-
-let gamepad1, gamepad2;
-let axis1, axis2;
-let marker, floor, baseReferenceSpace;
+let marker, baseReferenceSpace;
 
 let INTERSECTION;
 let moveingSpace = [];
@@ -58,39 +53,35 @@ function init() {
     blending: THREE.AdditiveBlending,
   });
 
-  let bufferline = new THREE.Line(buffer, matbuffer);
-  camera.add(bufferline);
 
-  // room = new THREE.LineSegments(
-  // 	new BoxLineGeometry( 6, 6, 6, 10, 10, 10 ).translate( 0, 3, 0 ),
-  // 	new THREE.LineBasicMaterial( { color: 0x808080 } )
-  // );
-  // scene.add( room );
+  scene.add(camera);
+
+  const geometryHitMarker = new THREE.SphereGeometry(0.01, 32, 32);
+  const materialHitMarker = new THREE.MeshStandardMaterial({
+    color: new THREE.Color(1, 1, 1),
+    roughness: 0.5,
+    metalness: 0.5,
+  });
+  const hitMarker = new THREE.Mesh(geometryHitMarker, materialHitMarker);
+  hitMarker.material.emissive = new THREE.Color(1, 1, 1);
+
+  camera.add(hitMarker);
+  hitMarker.position.set(0, 0, -1);
 
   let glbLoader = new GLTFLoader();
-  // glbLoader.load("./sources/musee.glb", function (object) {
-  //   object.scene.traverse(function (child) {
-  //     if (child.isMesh) {
-  //       // emit light
-  //       child.material.emissive = new THREE.Color(0x444444);
-  //     }
-  //   });
+  glbLoader.load("./sources/musee.glb", function (object) {
+    object.scene.traverse(function (child) {
+      if (child.isMesh) {
+        // emit light
+        child.material.emissive = new THREE.Color(0x444444);
+      }
+    });
 
-  //   object.scene.scale.set(0.5, 0.5, 0.5);
-  //   object.scene.position.x = 1;
-  //   object.scene.position.y = 0.5;
-  //   scene.add(object.scene);
-  // });
-
-  // scene.add(new THREE.HemisphereLight(0x606060, 0x404040));
-
-  let cubeTexture = new THREE.TextureLoader().load("./img/1426.png");
-  // let cubedeplacement = new THREE.Mesh(
-  //   new THREE.BoxGeometry(1, 0.1, 1),
-  //   new THREE.MeshBasicMaterial({ map: cubeTexture })
-  // );
-
-  // cubedeplacementTexture is a png only on the top face
+    object.scene.scale.set(0.5, 0.5, 0.5);
+    object.scene.position.x = 1;
+    object.scene.position.y = 0.5;
+    scene.add(object.scene);
+  });
 
   function createDeplacementCube(x, y, z) {
     let cubedeplacementTexture = new THREE.TextureLoader().load(
@@ -128,6 +119,7 @@ function init() {
     new THREE.CircleGeometry(0.25, 32).rotateX(-Math.PI / 2),
     new THREE.MeshBasicMaterial({ color: 0x808080 })
   );
+  marker.position.y = 0.7;
   scene.add(marker);
 
   raycaster = new THREE.Raycaster();
@@ -143,13 +135,10 @@ function init() {
   });
   renderer.xr.enabled = true;
 
-  console.log(renderer.xr.getCamera(camera).position);
-
   document.body.appendChild(renderer.domElement);
   document.body.appendChild(VRButton.createButton(renderer));
 
   // controllers
-
   function onSelectStart() {
     this.userData.isSelecting = true;
   }
@@ -270,32 +259,6 @@ function animate() {
   renderer.setAnimationLoop(render);
 }
 
-let lineCamera = new THREE.BufferGeometry();
-lineCamera.setAttribute(
-  "position",
-  new THREE.Float32BufferAttribute([0, 0, 0, 0, 0, -1], 3)
-);
-lineCamera.setAttribute(
-  "color",
-  new THREE.Float32BufferAttribute([0.5, 0.5, 0.5, 0, 0, 0], 3)
-);
-
-let lineMaterial = new THREE.LineBasicMaterial({
-  vertexColors: true,
-  blending: THREE.AdditiveBlending,
-});
-
-let line = new THREE.Line(lineCamera, lineMaterial);
-line.position.set(
-  renderer.xr.getCamera(camera).position.x,
-  renderer.xr.getCamera(camera).position.y,
-  renderer.xr.getCamera(camera).position.z
-);
-line.rotation.y = renderer.xr.getCamera(camera).rotation.y;
-line.rotation.x = renderer.xr.getCamera(camera).rotation.x;
-line.rotation.z = renderer.xr.getCamera(camera).rotation.z;
-scene.add(line);
-
 let cibleMesh = new THREE.Mesh(
   new THREE.SphereGeometry(0.1, 32, 32),
   new THREE.MeshBasicMaterial({ color: 0xff0000 })
@@ -329,65 +292,14 @@ let material = new THREE.MeshBasicMaterial({
   color: 0x00ff00, // Set the color to green
 });
 
-// Create a mesh for the progress bar
-let mesh = new THREE.Mesh(geometry, material);
+// Create a vueIndicator for the progress bar
+let vueIndicator = new THREE.Mesh(geometry, material);
 
-mesh.scale.set(0.1, 0.1, 0.1);
-mesh.rotation.x = Math.PI / 2;
+vueIndicator.scale.set(0.1, 0.1, 0.1);
+vueIndicator.rotation.x = Math.PI / 2;
 
-let cubeViseur = new THREE.Mesh(
-  new THREE.BoxGeometry(0.1, 0.1, 0.1),
-  new THREE.MeshBasicMaterial({ color: 0x00ff00 })
-);
-
-let meshdebug = new THREE.Mesh(
-  new THREE.SphereGeometry(0.1, 32, 32),
-  new THREE.MeshBasicMaterial({ color: 0xff0000 })
-);
-
-let meshhold = new THREE.Object3D();
 function render() {
   INTERSECTION = undefined;
-
-
-  meshhold.position.set(
-    renderer.xr.getCamera(camera).position.x,
-    renderer.xr.getCamera(camera).position.y,
-    renderer.xr.getCamera(camera).position.z
-  );
-  meshhold.rotation.set(
-    camera.rotation.x,
-    camera.rotation.y,
-    camera.rotation.z
-  );
-  meshdebug.position.set(
-    meshhold.position.x + 0.4,
-    meshhold.position.y,
-    meshhold.position.z
-  );
-  // meshdebug.rotation.z = meshhold.rotation.z;
-  // meshdebug.rotation.y = meshhold.rotation.y;
-  // meshdebug.rotation.x = meshhold.rotation.x;
-
-  meshhold.add(meshdebug);
-  scene.add(meshdebug)
-  scene.add(meshhold);
-
-
-  // line camera
-  if (line) {
-    scene.remove(line);
-    line = new THREE.Line(lineCamera, lineMaterial);
-    line.position.set(
-      renderer.xr.getCamera(camera).position.x,
-      renderer.xr.getCamera(camera).position.y,
-      renderer.xr.getCamera(camera).position.z
-    );
-    line.rotation.y = renderer.xr.getCamera(camera).rotation.y;
-    line.rotation.x = renderer.xr.getCamera(camera).rotation.x;
-    line.rotation.z = renderer.xr.getCamera(camera).rotation.z;
-    scene.add(line);
-  }
 
   tempMatrix
     .identity()
@@ -406,8 +318,8 @@ function render() {
         // let green = new THREE.Color(0,1,0);
         // let color = red.lerp(green, lastTime / 250);
         // cibleMesh.material.color.set(color);
-        if (mesh) {
-          scene.remove(mesh);
+        if (vueIndicator) {
+          scene.remove(vueIndicator);
         }
         // Define the radius of the progress bar
         radius = 5;
@@ -436,14 +348,14 @@ function render() {
           color: new THREE.Color("rgb(3,34,76)"),
         });
 
-        // Create a mesh for the progress bar
-        mesh = new THREE.Mesh(geometry, material);
+        // Create a vueIndicator for the progress bar
+        vueIndicator = new THREE.Mesh(geometry, material);
 
-        mesh.scale.set(0.1, 0.1, 0.1);
-        mesh.rotation.x = Math.PI / 2;
-        mesh.position.copy(intersects[0].point);
-        mesh.position.y = 0.7;
-        scene.add(mesh);
+        vueIndicator.scale.set(0.1, 0.1, 0.1);
+        vueIndicator.rotation.x = Math.PI / 2;
+        vueIndicator.position.copy(intersects[0].point);
+        vueIndicator.position.y = 0.7;
+        scene.add(vueIndicator);
 
         if (lastTime == 250) {
           const offsetPosition = {
@@ -476,28 +388,12 @@ function render() {
       lastPosition = intersects[0].point;
     }
     let intersesctionPoint = intersects[0].point;
-    if (!mesh) {
-      scene.remove(mesh);
+    if (!vueIndicator) {
+      scene.remove(vueIndicator);
     }
-    // cibleMesh.position.set(
-    //   intersesctionPoint.x,
-    //   intersesctionPoint.y,
-    //   intersesctionPoint.z
-    // );
-    // scene.add(cibleMesh);
   } else {
     lastTime = 0;
-    scene.remove(mesh);
-    // scene.remove(line);
-    cubeViseur.position.set(
-      renderer.xr.getCamera(camera).position.x,
-      renderer.xr.getCamera(camera).position.y,
-      renderer.xr.getCamera(camera).position.z
-    );
-    cubeViseur.rotation.y = renderer.xr.getCamera(camera).rotation.y;
-    cubeViseur.rotation.x = renderer.xr.getCamera(camera).rotation.x;
-    cubeViseur.rotation.z = renderer.xr.getCamera(camera).rotation.z;
-    scene.add(cubeViseur);
+    scene.remove(vueIndicator);
   }
 
   if (controller1.userData.isSelecting === true) {
@@ -527,9 +423,6 @@ function render() {
   if (INTERSECTION) marker.position.copy(INTERSECTION);
 
   marker.visible = INTERSECTION !== undefined;
-  // add cubeViseur for it is always at center of the screen even when moving
-  renderer.xr.getCamera(camera).add(cubeViseur);
-  cubeViseur.position.set(0, 0, -0.5);
 
   renderer.render(scene, camera);
 }
